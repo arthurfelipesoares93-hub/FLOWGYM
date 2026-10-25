@@ -1,0 +1,72 @@
+export const brl = (v: number | string | null | undefined) =>
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(v ?? 0));
+
+/** Formats YYYY-MM-DD (date-only) or ISO timestamps as DD/MM/AAAA without timezone shifts. */
+export function dateBR(v: string | null | undefined) {
+  if (!v) return "—";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) {
+    const [y, m, d] = v.split("-");
+    return `${d}/${m}/${y}`;
+  }
+  return new Date(v).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
+}
+
+export function dateTimeBR(v: string | null | undefined) {
+  if (!v) return "—";
+  return new Date(v).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" });
+}
+
+export function todayISO() {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+}
+
+export function ageFrom(birth: string | null | undefined, today = todayISO()) {
+  if (!birth) return null;
+  const [by, bm, bd] = birth.split("-").map(Number);
+  const [ty, tm, td] = today.split("-").map(Number);
+  let age = ty - by;
+  if (tm < bm || (tm === bm && td < bd)) age--;
+  return age >= 0 ? age : null;
+}
+
+export const financialLabels: Record<string, { label: string; tone: "success" | "warning" | "destructive" | "muted" | "info" }> = {
+  em_dia: { label: "Em dia", tone: "success" },
+  proximo: { label: "Próximo do vencimento", tone: "warning" },
+  pendente: { label: "Pendente", tone: "info" },
+  atrasado: { label: "Em atraso", tone: "destructive" },
+  bloqueado: { label: "Acesso bloqueado", tone: "destructive" },
+  inativo: { label: "Plano inativo", tone: "muted" },
+};
+
+export const workoutLabels: Record<string, { label: string; tone: "success" | "warning" | "destructive" | "muted" | "info" }> = {
+  pendente: { label: "Pendente de revisão", tone: "warning" },
+  ajustes: { label: "Devolvido para ajustes", tone: "info" },
+  reprovado: { label: "Reprovado", tone: "destructive" },
+  aprovado: { label: "Aprovado", tone: "success" },
+  substituido: { label: "Substituído", tone: "muted" },
+  sem_treino: { label: "Sem treino", tone: "muted" },
+};
+
+export const assessmentLabels: Record<string, { label: string; tone: "success" | "warning" | "muted" }> = {
+  nao_enviada: { label: "Não enviada", tone: "muted" },
+  aguardando: { label: "Aguardando análise", tone: "warning" },
+  analisada: { label: "Analisada", tone: "success" },
+};
+
+export const goalOptions = [
+  ["emagrecimento", "Emagrecimento"],
+  ["hipertrofia", "Hipertrofia"],
+  ["forca", "Ganho de força"],
+  ["condicionamento", "Condicionamento físico"],
+  ["resistencia", "Melhora da resistência"],
+  ["outro", "Outro"],
+] as const;
+
+export const weekDays = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
+
+export const paymentMethods = ["Pix", "Dinheiro", "Cartão de crédito", "Cartão de débito", "Transferência", "Boleto", "Outro"];
+
+export function errMsg(e: unknown) {
+  if (e && typeof e === "object" && "message" in e) return String((e as { message: unknown }).message);
+  return "Ocorreu um erro inesperado.";
+}
