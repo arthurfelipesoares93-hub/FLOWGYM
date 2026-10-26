@@ -186,6 +186,7 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
         const { data: files } = await supabaseAdmin.storage.from(bucket).list(sid as string, { limit: 1000 });
         if (files?.length) await supabaseAdmin.storage.from(bucket).remove(files.map((f) => `${sid}/${f.name}`));
       }
+      await supabaseAdmin.from("students").delete().eq("id", sid as string);
     }
     const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
     if (error) throw error;
