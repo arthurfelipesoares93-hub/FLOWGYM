@@ -57,7 +57,7 @@ export const generateWorkout = createServerFn({ method: "POST" })
       .order("performed_on", { ascending: false })
       .limit(40);
 
-    const apiKey = process.env.LOVABLE_API_KEY;
+    const apiKey = process.env["LOVABLE_API_KEY"];
     if (!apiKey) throw new Error("Integração de IA não configurada (LOVABLE_API_KEY ausente).");
 
     const { createOpenAI } = await import("@ai-sdk/openai");
@@ -116,7 +116,7 @@ Regras:
     let plan: z.infer<typeof planSchema>;
     try {
       const result = streamText({
-        model: provider.responses(MODEL),
+        model: provider.responses(MODEL) as never,
         system,
         prompt,
         output: Output.object({ schema: planSchema }),

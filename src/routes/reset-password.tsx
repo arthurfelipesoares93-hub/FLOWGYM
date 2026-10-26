@@ -36,6 +36,7 @@ function Reset() {
           if (error) return toast.error(errMsg(error));
           toast.success("Senha atualizada.");
           navigate({ to: "/painel" });
+          return undefined;
         }}
       >
         <h1 className="text-3xl font-bold uppercase">Nova senha</h1>

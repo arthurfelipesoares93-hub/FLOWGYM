@@ -22,8 +22,8 @@ export function todayISO() {
 
 export function ageFrom(birth: string | null | undefined, today = todayISO()) {
   if (!birth) return null;
-  const [by, bm, bd] = birth.split("-").map(Number);
-  const [ty, tm, td] = today.split("-").map(Number);
+  const [by = 0, bm = 0, bd = 0] = birth.split("-").map(Number);
+  const [ty = 0, tm = 0, td = 0] = today.split("-").map(Number);
   let age = ty - by;
   if (tm < bm || (tm === bm && td < bd)) age--;
   return age >= 0 ? age : null;
