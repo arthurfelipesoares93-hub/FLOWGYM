@@ -37,7 +37,7 @@ export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; not
           <Link
             key={n.to}
             to={n.to}
-            activeOptions={{ exact: n.exact }}
+            activeOptions={{ exact: !!n.exact }}
             onClick={() => setOpen(false)}
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             activeProps={{ className: "bg-sidebar-primary !text-sidebar-primary-foreground hover:!bg-sidebar-primary" }}

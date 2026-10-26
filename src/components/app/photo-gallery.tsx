@@ -61,7 +61,7 @@ export function PhotoGallery({ studentId, canDelete }: { studentId: string; canD
               {compare.map((d, i) => (
                 <div key={i}>
                   <p className="mb-1 text-xs font-semibold text-muted-foreground">{dateBR(d)}</p>
-                  <div className="space-y-2">{byDate[d].map((p) => p.url && <img key={p.id} src={p.url} alt={`Foto de ${dateBR(d)}`} className="w-full rounded-lg object-cover" />)}</div>
+                  <div className="space-y-2">{(byDate[d] ?? []).map((p) => p.url && <img key={p.id} src={p.url} alt={`Foto de ${dateBR(d)}`} className="w-full rounded-lg object-cover" />)}</div>
                 </div>
               ))}
             </div>
@@ -72,7 +72,7 @@ export function PhotoGallery({ studentId, canDelete }: { studentId: string; canD
         <div key={d}>
           <p className="mb-2 text-sm font-semibold">{dateBR(d)}</p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {byDate[d].map((p) => (
+            {(byDate[d] ?? []).map((p) => (
               <figure key={p.id} className="group relative overflow-hidden rounded-lg border bg-muted">
                 {p.url ? <img src={p.url} alt={p.angle ?? "Foto corporal"} loading="lazy" className="aspect-[3/4] w-full object-cover" /> : <div className="aspect-[3/4]" />}
                 {(p.angle || p.notes) && <figcaption className="p-2 text-xs">{[p.angle, p.notes].filter(Boolean).join(" · ")}</figcaption>}

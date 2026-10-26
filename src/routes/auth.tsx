@@ -8,10 +8,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/app/ui-bits";
 import { errMsg } from "@/lib/format";
 
-type Search = { mode?: "signup" | "login" };
+type Search = { mode?: "signup" | "login" | undefined };
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>): Search => ({ mode: s.mode === "signup" ? "signup" : undefined }),
+  validateSearch: (s: Record<string, unknown>): Search => ({ mode: s["mode"] === "signup" ? "signup" : undefined }),
   head: () => ({
     meta: [
       { title: "Entrar — Forja" },
