@@ -5,6 +5,7 @@
 - Fundações: landing, auth, reset de senha, shell, componentes compartilhados (avaliação, fotos, treino, desempenho), geração de treino por IA (server fn).
 
 ## Em aberto
+Pedido atual: concluir o site e verificar os fluxos reais antes de encerrar.
 1. Promover conta do Arthur (arthurfelipesoares93@gmail.com) a treinador (make_admin) — bloqueio: nenhum; fazer agora.
 2. Área do treinador: layout /admin + painel (visão geral dos alunos), página do aluno (ficha, plano, financeiro, treinos/revisão, fotos, bloqueio), configurações (nome, código de convite, instruções de pagamento), notificações.
 3. Área do aluno: layout /aluno + início, ficha de avaliação (formulário completo), treino atual + registro de sessão (cargas), evolução, financeiro (plano, cobranças, recibos), fotos (upload + consentimento), conta (consentimentos, vincular código, excluir conta).

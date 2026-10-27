@@ -66,7 +66,7 @@ export function ErrorBox({ error }: { error: unknown }) {
 
 export function Section({ title, children, actions, className }: { title: string; children: ReactNode; actions?: ReactNode; className?: string }) {
   return (
-    <section className={cn("rounded-xl border bg-card p-4 shadow-card sm:p-5", className)}>
+    <section className={cn("border-b py-5", className)}>
       <div className="mb-3 flex items-center justify-between gap-2">
         <h2 className="text-xl font-semibold uppercase">{title}</h2>
         {actions}

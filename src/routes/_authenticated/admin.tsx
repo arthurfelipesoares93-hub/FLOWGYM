@@ -1,16 +1,23 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { NotificationsPage } from "@/components/app/notifications-list";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { Users, LayoutDashboard, Settings, Bell } from 'lucide-react';
+import { portalOptions } from '@/lib/portal';
+import { Shell } from '@/components/app/shell';
+import { PortalError, PortalNotFound } from '@/components/app/route-feedback';
 
 export const Route = createFileRoute("/_authenticated/admin")({
+  loader: async ({ context }) => { const p = await context.queryClient.ensureQueryData(portalOptions); if (!p.admin) throw redirect({ to: '/aluno' }); },
+  errorComponent: PortalError,
+  notFoundComponent: PortalNotFound,
   component: Page,
 });
 
 function Page() {
-  return (
-    <div className="mx-auto max-w-4xl p-6">
-      <h1 className="mb-2 text-3xl font-bold uppercase">Painel em construção</h1>
-      <p className="mb-6 text-sm text-muted-foreground">Esta área ainda está sendo finalizada.</p>
-      <NotificationsPage />
-    </div>
-  );
+  useSuspenseQuery(portalOptions);
+  return <Shell roleLabel="Área do treinador" notificationsTo="/admin/notificacoes" nav={[
+    { to: '/admin', label: 'Visão geral', icon: LayoutDashboard, exact: true },
+    { to: '/admin/alunos', label: 'Alunos', icon: Users },
+    { to: '/admin/notificacoes', label: 'Notificações', icon: Bell },
+    { to: '/admin/configuracoes', label: 'Configurações', icon: Settings },
+  ]} />;
 }
