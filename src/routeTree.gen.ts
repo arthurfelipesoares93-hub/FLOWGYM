@@ -16,6 +16,19 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAlunoRouteImport } from './routes/_authenticated/aluno'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminAlunosRouteImport } from './routes/_authenticated/admin.alunos'
+import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
+import { Route as AuthenticatedAdminNotificacoesRouteImport } from './routes/_authenticated/admin.notificacoes'
+import { Route as AuthenticatedAlunoIndexRouteImport } from './routes/_authenticated/aluno.index'
+import { Route as AuthenticatedAlunoContaRouteImport } from './routes/_authenticated/aluno.conta'
+import { Route as AuthenticatedAlunoEvolucaoRouteImport } from './routes/_authenticated/aluno.evolucao'
+import { Route as AuthenticatedAlunoFichaRouteImport } from './routes/_authenticated/aluno.ficha'
+import { Route as AuthenticatedAlunoFinanceiroRouteImport } from './routes/_authenticated/aluno.financeiro'
+import { Route as AuthenticatedAlunoFotosRouteImport } from './routes/_authenticated/aluno.fotos'
+import { Route as AuthenticatedAlunoNotificacoesRouteImport } from './routes/_authenticated/aluno.notificacoes'
+import { Route as AuthenticatedAlunoTreinoRouteImport } from './routes/_authenticated/aluno.treino'
+import { Route as AuthenticatedAdminAlunosStudentIdRouteImport } from './routes/_authenticated/admin.alunos.$studentId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -51,22 +64,119 @@ const AuthenticatedPainelRoute = AuthenticatedPainelRouteImport.update({
   path: '/painel',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminAlunosRoute =
+  AuthenticatedAdminAlunosRouteImport.update({
+    id: '/alunos',
+    path: '/alunos',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminConfiguracoesRoute =
+  AuthenticatedAdminConfiguracoesRouteImport.update({
+    id: '/configuracoes',
+    path: '/configuracoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminNotificacoesRoute =
+  AuthenticatedAdminNotificacoesRouteImport.update({
+    id: '/notificacoes',
+    path: '/notificacoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAlunoIndexRoute = AuthenticatedAlunoIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAlunoRoute,
+} as any)
+const AuthenticatedAlunoContaRoute = AuthenticatedAlunoContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
+  getParentRoute: () => AuthenticatedAlunoRoute,
+} as any)
+const AuthenticatedAlunoEvolucaoRoute =
+  AuthenticatedAlunoEvolucaoRouteImport.update({
+    id: '/evolucao',
+    path: '/evolucao',
+    getParentRoute: () => AuthenticatedAlunoRoute,
+  } as any)
+const AuthenticatedAlunoFichaRoute = AuthenticatedAlunoFichaRouteImport.update({
+  id: '/ficha',
+  path: '/ficha',
+  getParentRoute: () => AuthenticatedAlunoRoute,
+} as any)
+const AuthenticatedAlunoFinanceiroRoute =
+  AuthenticatedAlunoFinanceiroRouteImport.update({
+    id: '/financeiro',
+    path: '/financeiro',
+    getParentRoute: () => AuthenticatedAlunoRoute,
+  } as any)
+const AuthenticatedAlunoFotosRoute = AuthenticatedAlunoFotosRouteImport.update({
+  id: '/fotos',
+  path: '/fotos',
+  getParentRoute: () => AuthenticatedAlunoRoute,
+} as any)
+const AuthenticatedAlunoNotificacoesRoute =
+  AuthenticatedAlunoNotificacoesRouteImport.update({
+    id: '/notificacoes',
+    path: '/notificacoes',
+    getParentRoute: () => AuthenticatedAlunoRoute,
+  } as any)
+const AuthenticatedAlunoTreinoRoute =
+  AuthenticatedAlunoTreinoRouteImport.update({
+    id: '/treino',
+    path: '/treino',
+    getParentRoute: () => AuthenticatedAlunoRoute,
+  } as any)
+const AuthenticatedAdminAlunosStudentIdRoute =
+  AuthenticatedAdminAlunosStudentIdRouteImport.update({
+    id: '/$studentId',
+    path: '/$studentId',
+    getParentRoute: () => AuthenticatedAdminAlunosRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/admin': typeof AuthenticatedAdminRoute
-  '/aluno': typeof AuthenticatedAlunoRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/aluno': typeof AuthenticatedAlunoRouteWithChildren
   '/painel': typeof AuthenticatedPainelRoute
+  '/admin/alunos': typeof AuthenticatedAdminAlunosRouteWithChildren
+  '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
+  '/aluno/conta': typeof AuthenticatedAlunoContaRoute
+  '/aluno/evolucao': typeof AuthenticatedAlunoEvolucaoRoute
+  '/aluno/ficha': typeof AuthenticatedAlunoFichaRoute
+  '/aluno/financeiro': typeof AuthenticatedAlunoFinanceiroRoute
+  '/aluno/fotos': typeof AuthenticatedAlunoFotosRoute
+  '/aluno/notificacoes': typeof AuthenticatedAlunoNotificacoesRoute
+  '/aluno/treino': typeof AuthenticatedAlunoTreinoRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/aluno/': typeof AuthenticatedAlunoIndexRoute
+  '/admin/alunos/$studentId': typeof AuthenticatedAdminAlunosStudentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/admin': typeof AuthenticatedAdminRoute
-  '/aluno': typeof AuthenticatedAlunoRoute
   '/painel': typeof AuthenticatedPainelRoute
+  '/admin/alunos': typeof AuthenticatedAdminAlunosRouteWithChildren
+  '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
+  '/aluno/conta': typeof AuthenticatedAlunoContaRoute
+  '/aluno/evolucao': typeof AuthenticatedAlunoEvolucaoRoute
+  '/aluno/ficha': typeof AuthenticatedAlunoFichaRoute
+  '/aluno/financeiro': typeof AuthenticatedAlunoFinanceiroRoute
+  '/aluno/fotos': typeof AuthenticatedAlunoFotosRoute
+  '/aluno/notificacoes': typeof AuthenticatedAlunoNotificacoesRoute
+  '/aluno/treino': typeof AuthenticatedAlunoTreinoRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/aluno': typeof AuthenticatedAlunoIndexRoute
+  '/admin/alunos/$studentId': typeof AuthenticatedAdminAlunosStudentIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -74,15 +184,64 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/aluno': typeof AuthenticatedAlunoRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/aluno': typeof AuthenticatedAlunoRouteWithChildren
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
+  '/_authenticated/admin/alunos': typeof AuthenticatedAdminAlunosRouteWithChildren
+  '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/_authenticated/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
+  '/_authenticated/aluno/conta': typeof AuthenticatedAlunoContaRoute
+  '/_authenticated/aluno/evolucao': typeof AuthenticatedAlunoEvolucaoRoute
+  '/_authenticated/aluno/ficha': typeof AuthenticatedAlunoFichaRoute
+  '/_authenticated/aluno/financeiro': typeof AuthenticatedAlunoFinanceiroRoute
+  '/_authenticated/aluno/fotos': typeof AuthenticatedAlunoFotosRoute
+  '/_authenticated/aluno/notificacoes': typeof AuthenticatedAlunoNotificacoesRoute
+  '/_authenticated/aluno/treino': typeof AuthenticatedAlunoTreinoRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/aluno/': typeof AuthenticatedAlunoIndexRoute
+  '/_authenticated/admin/alunos/$studentId': typeof AuthenticatedAdminAlunosStudentIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/reset-password' | '/admin' | '/aluno' | '/painel'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/admin'
+    | '/aluno'
+    | '/painel'
+    | '/admin/alunos'
+    | '/admin/configuracoes'
+    | '/admin/notificacoes'
+    | '/aluno/conta'
+    | '/aluno/evolucao'
+    | '/aluno/ficha'
+    | '/aluno/financeiro'
+    | '/aluno/fotos'
+    | '/aluno/notificacoes'
+    | '/aluno/treino'
+    | '/admin/'
+    | '/aluno/'
+    | '/admin/alunos/$studentId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/reset-password' | '/admin' | '/aluno' | '/painel'
+  to:
+    | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/painel'
+    | '/admin/alunos'
+    | '/admin/configuracoes'
+    | '/admin/notificacoes'
+    | '/aluno/conta'
+    | '/aluno/evolucao'
+    | '/aluno/ficha'
+    | '/aluno/financeiro'
+    | '/aluno/fotos'
+    | '/aluno/notificacoes'
+    | '/aluno/treino'
+    | '/admin'
+    | '/aluno'
+    | '/admin/alunos/$studentId'
   id:
     | '__root__'
     | '/'
@@ -92,6 +251,19 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/aluno'
     | '/_authenticated/painel'
+    | '/_authenticated/admin/alunos'
+    | '/_authenticated/admin/configuracoes'
+    | '/_authenticated/admin/notificacoes'
+    | '/_authenticated/aluno/conta'
+    | '/_authenticated/aluno/evolucao'
+    | '/_authenticated/aluno/ficha'
+    | '/_authenticated/aluno/financeiro'
+    | '/_authenticated/aluno/fotos'
+    | '/_authenticated/aluno/notificacoes'
+    | '/_authenticated/aluno/treino'
+    | '/_authenticated/admin/'
+    | '/_authenticated/aluno/'
+    | '/_authenticated/admin/alunos/$studentId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -152,18 +324,166 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPainelRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/alunos': {
+      id: '/_authenticated/admin/alunos'
+      path: '/alunos'
+      fullPath: '/admin/alunos'
+      preLoaderRoute: typeof AuthenticatedAdminAlunosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/configuracoes': {
+      id: '/_authenticated/admin/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/admin/configuracoes'
+      preLoaderRoute: typeof AuthenticatedAdminConfiguracoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/notificacoes': {
+      id: '/_authenticated/admin/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/admin/notificacoes'
+      preLoaderRoute: typeof AuthenticatedAdminNotificacoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/aluno/': {
+      id: '/_authenticated/aluno/'
+      path: '/'
+      fullPath: '/aluno/'
+      preLoaderRoute: typeof AuthenticatedAlunoIndexRouteImport
+      parentRoute: typeof AuthenticatedAlunoRoute
+    }
+    '/_authenticated/aluno/conta': {
+      id: '/_authenticated/aluno/conta'
+      path: '/conta'
+      fullPath: '/aluno/conta'
+      preLoaderRoute: typeof AuthenticatedAlunoContaRouteImport
+      parentRoute: typeof AuthenticatedAlunoRoute
+    }
+    '/_authenticated/aluno/evolucao': {
+      id: '/_authenticated/aluno/evolucao'
+      path: '/evolucao'
+      fullPath: '/aluno/evolucao'
+      preLoaderRoute: typeof AuthenticatedAlunoEvolucaoRouteImport
+      parentRoute: typeof AuthenticatedAlunoRoute
+    }
+    '/_authenticated/aluno/ficha': {
+      id: '/_authenticated/aluno/ficha'
+      path: '/ficha'
+      fullPath: '/aluno/ficha'
+      preLoaderRoute: typeof AuthenticatedAlunoFichaRouteImport
+      parentRoute: typeof AuthenticatedAlunoRoute
+    }
+    '/_authenticated/aluno/financeiro': {
+      id: '/_authenticated/aluno/financeiro'
+      path: '/financeiro'
+      fullPath: '/aluno/financeiro'
+      preLoaderRoute: typeof AuthenticatedAlunoFinanceiroRouteImport
+      parentRoute: typeof AuthenticatedAlunoRoute
+    }
+    '/_authenticated/aluno/fotos': {
+      id: '/_authenticated/aluno/fotos'
+      path: '/fotos'
+      fullPath: '/aluno/fotos'
+      preLoaderRoute: typeof AuthenticatedAlunoFotosRouteImport
+      parentRoute: typeof AuthenticatedAlunoRoute
+    }
+    '/_authenticated/aluno/notificacoes': {
+      id: '/_authenticated/aluno/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/aluno/notificacoes'
+      preLoaderRoute: typeof AuthenticatedAlunoNotificacoesRouteImport
+      parentRoute: typeof AuthenticatedAlunoRoute
+    }
+    '/_authenticated/aluno/treino': {
+      id: '/_authenticated/aluno/treino'
+      path: '/treino'
+      fullPath: '/aluno/treino'
+      preLoaderRoute: typeof AuthenticatedAlunoTreinoRouteImport
+      parentRoute: typeof AuthenticatedAlunoRoute
+    }
+    '/_authenticated/admin/alunos/$studentId': {
+      id: '/_authenticated/admin/alunos/$studentId'
+      path: '/$studentId'
+      fullPath: '/admin/alunos/$studentId'
+      preLoaderRoute: typeof AuthenticatedAdminAlunosStudentIdRouteImport
+      parentRoute: typeof AuthenticatedAdminAlunosRoute
+    }
   }
 }
 
+interface AuthenticatedAdminAlunosRouteChildren {
+  AuthenticatedAdminAlunosStudentIdRoute: typeof AuthenticatedAdminAlunosStudentIdRoute
+}
+
+const AuthenticatedAdminAlunosRouteChildren: AuthenticatedAdminAlunosRouteChildren =
+  {
+    AuthenticatedAdminAlunosStudentIdRoute:
+      AuthenticatedAdminAlunosStudentIdRoute,
+  }
+
+const AuthenticatedAdminAlunosRouteWithChildren =
+  AuthenticatedAdminAlunosRoute._addFileChildren(
+    AuthenticatedAdminAlunosRouteChildren,
+  )
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAlunosRoute: typeof AuthenticatedAdminAlunosRouteWithChildren
+  AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
+  AuthenticatedAdminNotificacoesRoute: typeof AuthenticatedAdminNotificacoesRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAlunosRoute: AuthenticatedAdminAlunosRouteWithChildren,
+  AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
+  AuthenticatedAdminNotificacoesRoute: AuthenticatedAdminNotificacoesRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedAlunoRouteChildren {
+  AuthenticatedAlunoContaRoute: typeof AuthenticatedAlunoContaRoute
+  AuthenticatedAlunoEvolucaoRoute: typeof AuthenticatedAlunoEvolucaoRoute
+  AuthenticatedAlunoFichaRoute: typeof AuthenticatedAlunoFichaRoute
+  AuthenticatedAlunoFinanceiroRoute: typeof AuthenticatedAlunoFinanceiroRoute
+  AuthenticatedAlunoFotosRoute: typeof AuthenticatedAlunoFotosRoute
+  AuthenticatedAlunoNotificacoesRoute: typeof AuthenticatedAlunoNotificacoesRoute
+  AuthenticatedAlunoTreinoRoute: typeof AuthenticatedAlunoTreinoRoute
+  AuthenticatedAlunoIndexRoute: typeof AuthenticatedAlunoIndexRoute
+}
+
+const AuthenticatedAlunoRouteChildren: AuthenticatedAlunoRouteChildren = {
+  AuthenticatedAlunoContaRoute: AuthenticatedAlunoContaRoute,
+  AuthenticatedAlunoEvolucaoRoute: AuthenticatedAlunoEvolucaoRoute,
+  AuthenticatedAlunoFichaRoute: AuthenticatedAlunoFichaRoute,
+  AuthenticatedAlunoFinanceiroRoute: AuthenticatedAlunoFinanceiroRoute,
+  AuthenticatedAlunoFotosRoute: AuthenticatedAlunoFotosRoute,
+  AuthenticatedAlunoNotificacoesRoute: AuthenticatedAlunoNotificacoesRoute,
+  AuthenticatedAlunoTreinoRoute: AuthenticatedAlunoTreinoRoute,
+  AuthenticatedAlunoIndexRoute: AuthenticatedAlunoIndexRoute,
+}
+
+const AuthenticatedAlunoRouteWithChildren =
+  AuthenticatedAlunoRoute._addFileChildren(AuthenticatedAlunoRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedAlunoRoute: typeof AuthenticatedAlunoRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedAlunoRoute: typeof AuthenticatedAlunoRouteWithChildren
   AuthenticatedPainelRoute: typeof AuthenticatedPainelRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedAlunoRoute: AuthenticatedAlunoRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedAlunoRoute: AuthenticatedAlunoRouteWithChildren,
   AuthenticatedPainelRoute: AuthenticatedPainelRoute,
 }
 
