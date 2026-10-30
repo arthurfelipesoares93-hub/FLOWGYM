@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/app/ui-bits";
 import { errMsg } from "@/lib/format";
 
-type Search = { mode?: "signup" | "login" | undefined; code?:string; email?:string; name?:string; phone?:string };
+type Search = { mode?: "signup" | "login" | undefined; code?:string|undefined; email?:string|undefined; name?:string|undefined; phone?:string|undefined };
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>): Search => ({ mode: s["mode"] === "signup" ? "signup" : undefined,code:typeof s["code"]==="string"?s["code"]:undefined,email:typeof s["email"]==="string"?s["email"]:undefined,name:typeof s["name"]==="string"?s["name"]:undefined,phone:typeof s["phone"]==="string"?s["phone"]:undefined }),

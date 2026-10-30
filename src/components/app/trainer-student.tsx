@@ -21,7 +21,7 @@ export function TrainerStudent({ d }: { d: StudentData }) {
   const action = useAction();
   const [notes,setNotes] = useState('');
   const [reason,setReason] = useState('');
-  const privateNotes=useQuery({queryKey:['private-notes',d.student.id],queryFn:async()=>check(await supabase.from('student_private_notes').select('notes').eq('student_id',d.student.id).maybeSingle())});
+  const privateNotes=useQuery({queryKey:['private-notes',d.student.id],queryFn:async()=>{const result=await supabase.from('student_private_notes').select('notes').eq('student_id',d.student.id).maybeSingle();if(result.error)throw result.error;return result.data;}});
   const audit = useQuery({ queryKey:['audit',d.student.id],queryFn:async () => check(await supabase.from('audit_logs').select('*').eq('student_id',d.student.id).order('created_at',{ ascending:false }).limit(100)) });
   return <div className="space-y-5"><Button asChild variant="link" className="px-0"><Link to="/admin/alunos">← Todos os alunos</Link></Button><PageHeader title={d.profile.full_name} description={d.profile.email ?? ''} />
     <Tabs defaultValue="ficha"><TabsList className="flex h-auto flex-wrap justify-start">{[['ficha','Avaliação'],['treinos','Treinos'],['financeiro','Financeiro'],['evolucao','Evolução'],['fotos','Fotos'],['gestao','Gestão']].map(([value,label]) => <TabsTrigger key={value} value={value ?? ''}>{label}</TabsTrigger>)}</TabsList>
