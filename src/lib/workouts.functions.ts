@@ -40,8 +40,12 @@ export const generateWorkout = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     // Authorization through RLS-aware RPC (never trust browser ids)
-    const { data: allowed } = await supabase.rpc("can_access_student", { _student_id: data.studentId });
+    const { data: allowed, error: authorizationError } = await supabase.rpc("is_trainer_of", { _student_id: data.studentId });
+    if (authorizationError) throw new Error('Não foi possível verificar a autorização.');
     if (!allowed) throw new Error("Acesso negado.");
+
+    const consent = await supabase.from('students').select('data_consent_at').eq('id', data.studentId).single();
+    if (consent.error || !consent.data.data_consent_at) throw new Error('O aluno precisa autorizar o uso dos dados para o acompanhamento.');
 
     const { data: assessment } = await supabase.from("assessments").select("*").eq("student_id", data.studentId).maybeSingle();
     if (!assessment?.submitted_at) throw new Error("A ficha de avaliação precisa ser enviada antes de gerar um treino.");

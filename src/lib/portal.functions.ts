@@ -27,7 +27,7 @@ export const getStudent = createServerFn({ method: 'POST' })
     const allowed = await supabase.rpc('can_access_student', { _student_id: sid });
     if (!allowed.data) throw new Error('Acesso negado.');
     const [student, assessment, plan, charges, payments, versions, instructions] = await Promise.all([
-      supabase.from('students').select('*').eq('id', sid).single(),
+      supabase.from('students').select('id,user_id,trainer_id,manual_block,manual_block_reason,manual_block_at,photo_consent_at,data_consent_at,created_at,accompaniment_status,accompaniment_started_on,last_access_at').eq('id', sid).single(),
       supabase.from('assessments').select('*').eq('student_id', sid).maybeSingle(),
       supabase.from('plans').select('*').eq('student_id', sid).maybeSingle(),
       supabase.from('charges').select('*').eq('student_id', sid).order('due_date', { ascending: false }),
