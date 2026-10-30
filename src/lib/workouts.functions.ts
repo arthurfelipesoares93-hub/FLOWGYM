@@ -147,14 +147,18 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const { data: sid } = await supabase.rpc("my_student_id");
+    const studentResult = await supabase.rpc("my_student_id");
+    if(studentResult.error)throw new Error(studentResult.error.message);
+    const sid=studentResult.data;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (sid) {
       for (const bucket of ["body-photos", "receipts"]) {
-        const { data: files } = await supabaseAdmin.storage.from(bucket).list(sid as string, { limit: 1000 });
-        if (files?.length) await supabaseAdmin.storage.from(bucket).remove(files.map((f) => `${sid}/${f.name}`));
+        let offset=0;const paths:string[]=[];
+        while(true){const result=await supabaseAdmin.storage.from(bucket).list(sid,{limit:1000,offset});if(result.error)throw new Error('Não foi possível conferir todos os arquivos. A exclusão foi interrompida.');const files=result.data??[];paths.push(...files.map(f=>`${sid}/${f.name}`));if(files.length<1000)break;offset+=1000;}
+        for(let i=0;i<paths.length;i+=100){const removed=await supabaseAdmin.storage.from(bucket).remove(paths.slice(i,i+100));if(removed.error)throw new Error('Não foi possível excluir todos os arquivos. Tente novamente.');}
       }
-      await supabaseAdmin.from("students").delete().eq("id", sid as string);
+      const removed=await supabaseAdmin.from("students").delete().eq("id",sid);
+      if(removed.error)throw new Error('Não foi possível excluir os dados da conta.');
     }
     const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
     if (error) throw error;
