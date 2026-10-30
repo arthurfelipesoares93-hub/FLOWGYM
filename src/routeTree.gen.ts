@@ -12,7 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ComoFuncionaRouteImport } from './routes/como-funciona'
+import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as WilliamRouteImport } from './routes/william'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAlunoRouteImport } from './routes/_authenticated/aluno'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
@@ -44,9 +47,24 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComoFuncionaRoute = ComoFuncionaRouteImport.update({
+  id: '/como-funciona',
+  path: '/como-funciona',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WilliamRoute = WilliamRouteImport.update({
+  id: '/william',
+  path: '/william',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -141,7 +159,10 @@ const AuthenticatedAdminAlunosStudentIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/como-funciona': typeof ComoFuncionaRoute
+  '/contato': typeof ContatoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/william': typeof WilliamRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/aluno': typeof AuthenticatedAlunoRouteWithChildren
   '/painel': typeof AuthenticatedPainelRoute
@@ -162,7 +183,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/como-funciona': typeof ComoFuncionaRoute
+  '/contato': typeof ContatoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/william': typeof WilliamRoute
   '/painel': typeof AuthenticatedPainelRoute
   '/admin/alunos': typeof AuthenticatedAdminAlunosRouteWithChildren
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
@@ -183,7 +207,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/como-funciona': typeof ComoFuncionaRoute
+  '/contato': typeof ContatoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/william': typeof WilliamRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/aluno': typeof AuthenticatedAlunoRouteWithChildren
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
@@ -206,7 +233,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/como-funciona'
+    | '/contato'
     | '/reset-password'
+    | '/william'
     | '/admin'
     | '/aluno'
     | '/painel'
@@ -227,7 +257,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/como-funciona'
+    | '/contato'
     | '/reset-password'
+    | '/william'
     | '/painel'
     | '/admin/alunos'
     | '/admin/configuracoes'
@@ -247,7 +280,10 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/como-funciona'
+    | '/contato'
     | '/reset-password'
+    | '/william'
     | '/_authenticated/admin'
     | '/_authenticated/aluno'
     | '/_authenticated/painel'
@@ -270,7 +306,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ComoFuncionaRoute: typeof ComoFuncionaRoute
+  ContatoRoute: typeof ContatoRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  WilliamRoute: typeof WilliamRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -296,11 +335,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/como-funciona': {
+      id: '/como-funciona'
+      path: '/como-funciona'
+      fullPath: '/como-funciona'
+      preLoaderRoute: typeof ComoFuncionaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/william': {
+      id: '/william'
+      path: '/william'
+      fullPath: '/william'
+      preLoaderRoute: typeof WilliamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -494,7 +554,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ComoFuncionaRoute: ComoFuncionaRoute,
+  ContatoRoute: ContatoRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  WilliamRoute: WilliamRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
