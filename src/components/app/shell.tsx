@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, useSignOut } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import {usePublicBrand} from '@/lib/public-brand';
 import { Button } from '@/components/ui/button';
 
 export type NavItem = { to: string; label: string; icon: ComponentType<{ className?: string }>; exact?: boolean };
@@ -21,6 +22,7 @@ export function useUnreadCount() {
 }
 
 export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; notificationsTo: string; roleLabel: string }) {
+  const {data:brand}=usePublicBrand();
   const [open, setOpen] = useState(false);
   const { data: me } = useMe();
   const signOut = useSignOut();
@@ -30,7 +32,7 @@ export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; not
   const sidebar = (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
       <div className="flex items-center justify-between px-5 py-5">
-        <span className="font-display text-2xl font-bold uppercase tracking-wider text-sidebar-accent-foreground">Team <span className="text-sidebar-primary">Oliveira</span></span>
+        <span className="font-display text-2xl font-bold uppercase tracking-wider text-sidebar-accent-foreground">{brand?.brand||'Team Oliveira'}</span>
         <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(false)} aria-label="Fechar menu"><X className="h-5 w-5" /></Button>
       </div>
       <p className="px-5 pb-2 text-[11px] font-semibold uppercase tracking-widest text-sidebar-foreground/50">{roleLabel}</p>
@@ -60,7 +62,7 @@ export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; not
   );
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen" data-blue-theme={brand?.theme??'classico'}>
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 lg:block">{sidebar}</aside>
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
@@ -71,7 +73,7 @@ export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; not
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex items-center justify-between border-b bg-background/90 px-4 py-3 backdrop-blur lg:px-8">
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)} aria-label="Abrir menu"><Menu className="h-5 w-5" /></Button>
-          <div className="lg:hidden font-display text-xl font-bold uppercase">Team <span className="text-primary">Oliveira</span></div>
+          <div className="lg:hidden font-display text-xl font-bold uppercase">{brand?.brand||'Team Oliveira'}</div>
           <div className="hidden lg:block" />
           <Link to={notificationsTo} className="relative rounded-full p-2 hover:bg-muted" aria-label="Notificações">
             <Bell className="h-5 w-5" />

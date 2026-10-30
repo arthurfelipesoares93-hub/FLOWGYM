@@ -119,3 +119,6 @@
 @utility font-display { font-family: var(--font-display); }
 @utility bg-hero { background-image: var(--gradient-hero); }
 @utility shadow-card { box-shadow: var(--shadow-card); }
+
+[data-blue-theme="oceano"] { --primary: oklch(0.5 0.15 235); --sidebar: oklch(0.23 0.06 240); --sidebar-primary: oklch(0.55 0.16 235); }
+[data-blue-theme="eletrico"] { --primary: oklch(0.53 0.24 263); --sidebar: oklch(0.22 0.08 260); --sidebar-primary: oklch(0.58 0.23 263); }
