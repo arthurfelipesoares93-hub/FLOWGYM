@@ -1,3 +1,5 @@
+import {ProgressGoals} from './progress-goals';
+import {useQuery} from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useServerFn } from '@tanstack/react-start';
@@ -16,13 +18,14 @@ import { ArrowUpRight, ClipboardList, Dumbbell } from 'lucide-react';
 
 export function StudentHome({ d,p }: { d: StudentData; p: PortalData }) {
   const access = p.access as AccessStatus | null;
+  const history=useQuery({queryKey:['student-home-history',d.student.id],queryFn:async()=>{const r=await supabase.from('training_sessions').select('id,performed_on,finished_at,workout_sessions(name)').eq('student_id',d.student.id).order('performed_on',{ascending:false}).limit(10);if(r.error)throw r.error;return r.data;}});
   const next = d.charges.filter(c => c.status === 'aberta').sort((a,b) => a.due_date.localeCompare(b.due_date))[0];
   return <div className="space-y-6"><PageHeader title={`Olá, ${d.profile.full_name.split(' ')[0] || 'aluno'}`} /><div className="flex flex-wrap items-center justify-between gap-3 border-y bg-accent/15 px-4 py-6"><h2 className="text-3xl font-bold uppercase">Seu próximo passo</h2><Button asChild><Link to={d.assessment?.submitted_at ? '/aluno/treino' : '/aluno/ficha'}>{d.assessment?.submitted_at ? 'Ver meu treino' : 'Preencher avaliação'}<ArrowUpRight className="h-4 w-4" /></Link></Button></div>
     {!access?.linked && <Section title="Vínculo com treinador"><Button asChild variant="outline"><Link to="/aluno/conta">Informar código do treinador</Link></Button></Section>}
     <div className="grid gap-3 sm:grid-cols-3"><StatCard label="Situação financeira" value={<StatusBadge map={financialLabels} value={access?.status} />} /><StatCard label="Próximo vencimento" value={<span className="text-xl">{dateBR(next?.due_date)}</span>} /><StatCard label="Plano" value={d.plan ? brl(d.plan.monthly_fee) : '—'} /></div>
     {!access?.has_access && <div className="border-l-4 border-warning bg-warning/10 p-4 text-sm">{access?.manual_block_reason || 'Seu acesso aos treinos depende de um plano ativo e pagamentos em dia.'}<Button asChild variant="link"><Link to="/aluno/financeiro">Ver financeiro</Link></Button></div>}
     <div className="grid gap-4 sm:grid-cols-2"><Button asChild variant="outline" className="h-20 justify-start"><Link to="/aluno/ficha"><ClipboardList />Minha avaliação<ArrowUpRight className="ml-auto h-4 w-4" /></Link></Button><Button asChild variant="outline" className="h-20 justify-start"><Link to="/aluno/treino"><Dumbbell />Meu treino<ArrowUpRight className="ml-auto h-4 w-4" /></Link></Button></div>
-  </div>;
+<Section title="Histórico recente">{history.data?.map(t=><p key={t.id} className="border-b py-3 text-sm">{t.workout_sessions?.name} · {dateBR(t.performed_on)} · {t.finished_at?'Concluído':'Em andamento'}</p>)}{!history.data?.length&&<p className="text-sm text-muted-foreground">Nenhum treino registrado.</p>}</Section><ProgressGoals studentId={d.student.id}/></div>;
 }
 export function StudentAccount({ d }: { d: StudentData }) {
   const [name,setName] = useState(d.profile.full_name);

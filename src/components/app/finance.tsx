@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import {useSuspenseQuery} from '@tanstack/react-query';
+import {portalOptions} from '@/lib/portal';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { Enums } from '@/integrations/supabase/types';
@@ -13,12 +15,13 @@ import { useAction, check } from './actions';
 
 export function Finance({ d, trainer }: { d: StudentData; trainer: boolean }) {
   const action = useAction();
+  const {data:portal}=useSuspenseQuery(portalOptions);
   const [fee, setFee] = useState(String(d.plan?.monthly_fee ?? ''));
   const [start, setStart] = useState(d.plan?.start_date ?? todayISO());
   const [end, setEnd] = useState(d.plan?.end_date ?? '');
   const [due, setDue] = useState(d.plan?.first_due_date ?? todayISO());
   const [period, setPeriod] = useState<Enums<'plan_periodicity'>>(d.plan?.periodicity ?? 'mensal');
-  const [grace, setGrace] = useState(d.plan?.grace_days ?? 7);
+  const [grace, setGrace] = useState(d.plan?.grace_days ?? portal.settings?.suspension_days ?? 7);
   const [active, setActive] = useState(d.plan?.active ?? true);
   const [payCharge, setPayCharge] = useState('');
   const charge = d.charges.find(c => c.id === payCharge);
