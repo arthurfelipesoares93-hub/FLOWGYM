@@ -20,5 +20,7 @@ export const getManagement = createServerFn({method:'GET'}).middleware([requireS
   ]);
   for(const r of results) if(r.error) throw new Error(r.error.message);
   const [leads,contacts,goals,progress,students,profiles,assessments,sessions,payments,charges,actions]=results;
-  return {leads:leads?.data??[],contacts:contacts?.data??[],goals:goals?.data??[],progress:progress?.data??[],students:students?.data??[],profiles:profiles?.data??[],assessments:assessments?.data??[],sessions:sessions?.data??[],payments:payments?.data??[],charges:charges?.data??[],actions:actions?.data??[]};
+  const ownStudents=(students?.data??[]).filter(s=>s.user_id!==context.userId);
+  const ids=new Set(ownStudents.map(s=>s.id));
+  return {leads:leads?.data??[],contacts:contacts?.data??[],goals:(goals?.data??[]).filter(g=>ids.has(g.student_id)),progress:(progress?.data??[]).filter(g=>ids.has(g.student_id)),students:ownStudents,profiles:profiles?.data??[],assessments:(assessments?.data??[]).filter(g=>ids.has(g.student_id)),sessions:(sessions?.data??[]).filter(g=>ids.has(g.student_id)),payments:(payments?.data??[]).filter(g=>ids.has(g.student_id)),charges:(charges?.data??[]).filter(g=>ids.has(g.student_id)),actions:actions?.data??[]};
 });
