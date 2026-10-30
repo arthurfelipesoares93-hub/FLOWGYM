@@ -12,7 +12,8 @@ export function usePhotos(studentId: string | undefined) {
     queryKey: ["photos", studentId],
     enabled: !!studentId,
     queryFn: async () => {
-      const { data, error } = await supabase.from("body_photos").select("*").eq("student_id", studentId!).order("taken_on", { ascending: false }).order("created_at", { ascending: false });
+      if (!studentId) return [];
+      const { data, error } = await supabase.from("body_photos").select("*").eq("student_id", studentId).order("taken_on", { ascending: false }).order("created_at", { ascending: false });
       if (error) throw error;
       if (!data.length) return [];
       const { data: urls } = await supabase.storage.from("body-photos").createSignedUrls(data.map((p) => p.storage_path), 3600);

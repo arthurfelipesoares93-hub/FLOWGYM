@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Field, PageHeader } from '@/components/app/ui-bits';
 import { useAction, check } from '@/components/app/actions';
 import { supabase } from '@/integrations/supabase/client';
-export const Route = createFileRoute('/_authenticated/admin/configuracoes')({ head: () => ({ meta: [{ title:'Configurações do treinador — Forja' },{ name:'description',content:'Nome do negócio, código de convite e instruções de pagamento.' },{ property:'og:title',content:'Configurações do treinador — Forja' },{ property:'og:description',content:'Nome do negócio, código de convite e instruções de pagamento.' },{ property:'og:type',content:'website' },{ name:'twitter:card',content:'summary_large_image' }] }), loader:({ context }) => context.queryClient.ensureQueryData(portalOptions),errorComponent:PortalError,notFoundComponent:PortalNotFound,component:Page });
+export const Route = createFileRoute('/_authenticated/admin/configuracoes')({ head: () => ({ meta: [{ title:'Configurações do treinador — Team Oliveira' },{ name:'description',content:'Nome do negócio, código de convite e instruções de pagamento.' },{ property:'og:title',content:'Configurações do treinador — Team Oliveira' },{ property:'og:description',content:'Nome do negócio, código de convite e instruções de pagamento.' },{ property:'og:type',content:'website' },{ name:'twitter:card',content:'summary_large_image' }] }), loader:({ context }) => context.queryClient.ensureQueryData(portalOptions),errorComponent:PortalError,notFoundComponent:PortalNotFound,component:Page });
 function Page() {
  const { data:p } = useSuspenseQuery(portalOptions);
  const [name,setName] = useState(p.settings?.business_name ?? '');

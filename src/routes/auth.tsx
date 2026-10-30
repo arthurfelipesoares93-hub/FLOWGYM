@@ -8,28 +8,30 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Field } from "@/components/app/ui-bits";
 import { errMsg } from "@/lib/format";
 
-type Search = { mode?: "signup" | "login" | undefined };
+type Search = { mode?: "signup" | "login" | undefined; code?:string; email?:string; name?:string; phone?:string };
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>): Search => ({ mode: s["mode"] === "signup" ? "signup" : undefined }),
+  validateSearch: (s: Record<string, unknown>): Search => ({ mode: s["mode"] === "signup" ? "signup" : undefined,code:typeof s["code"]==="string"?s["code"]:undefined,email:typeof s["email"]==="string"?s["email"]:undefined,name:typeof s["name"]==="string"?s["name"]:undefined,phone:typeof s["phone"]==="string"?s["phone"]:undefined }),
   head: () => ({
     meta: [
-      { title: "Entrar — Forja" },
+      { title: "Entrar — Team Oliveira" },
       { name: "description", content: "Acesse sua conta de aluno ou treinador." },
-      { property: "og:title", content: "Entrar — Forja" },
+      { property: "og:title", content: "Entrar — Team Oliveira" },
       { property: "og:description", content: "Acesse sua conta de aluno ou treinador." },
+      {property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"},
     ],
   }),
   component: AuthPage,
 });
 
 function AuthPage() {
-  const { mode: initial } = Route.useSearch();
+  const { mode: initial,code:invite,email:invitedEmail,name:invitedName,phone:invitedPhone } = Route.useSearch();
   const [mode, setMode] = useState<"login" | "signup" | "forgot">(initial === "signup" ? "signup" : "login");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(invitedEmail??"");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [code, setCode] = useState("");
+  const [name, setName] = useState(invitedName??"");
+  const [phone,setPhone]=useState(invitedPhone??"");
+  const [code, setCode] = useState(invite??"");
   const [consent, setConsent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
@@ -48,7 +50,7 @@ function AuthPage() {
         if (password.length < 8) throw new Error("A senha deve ter pelo menos 8 caracteres.");
         const { error } = await supabase.auth.signUp({
           email, password,
-          options: { emailRedirectTo: window.location.origin + "/painel", data: { full_name: name, invite_code: code, data_consent: "true" } },
+          options: { emailRedirectTo: window.location.origin + "/painel", data: { full_name: name, phone, invite_code: code, data_consent: "true" } },
         });
         if (error) throw error;
         setSent(true);
@@ -69,7 +71,7 @@ function AuthPage() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="hidden bg-hero p-10 text-primary-foreground lg:flex lg:flex-col lg:justify-between">
-        <Link to="/" className="font-display text-2xl font-bold uppercase tracking-wider">For<span className="text-accent">ja</span></Link>
+        <Link to="/" className="font-display text-2xl font-bold uppercase tracking-wider">Team <span className="text-accent">Oliveira</span></Link>
         <div>
           <h2 className="text-5xl font-bold uppercase leading-none">Seu treino,<br />aprovado por quem entende.</h2>
           <p className="mt-4 max-w-sm text-primary-foreground/70">Cada treino gerado com IA passa pela revisão do seu treinador antes de chegar até você.</p>
@@ -78,7 +80,7 @@ function AuthPage() {
       </div>
       <div className="flex items-center justify-center p-6">
         <div className="w-full max-w-sm">
-          <Link to="/" className="mb-8 block font-display text-2xl font-bold uppercase lg:hidden">For<span className="text-success">ja</span></Link>
+          <Link to="/" className="mb-8 block font-display text-2xl font-bold uppercase lg:hidden">Team <span className="text-primary">Oliveira</span></Link>
           {sent ? (
             <div className="space-y-3">
               <h1 className="text-3xl font-bold uppercase">Confirme seu e-mail</h1>
@@ -93,7 +95,7 @@ function AuthPage() {
               {mode === "signup" && (
                 <>
                   <Field label="Nome completo"><Input required value={name} onChange={(e) => setName(e.target.value)} /></Field>
-                  <Field label="Código do treinador" hint="Peça o código ao seu treinador. Você também pode informá-lo depois.">
+                  <Field label="Telefone / WhatsApp"><Input type="tel" maxLength={30} value={phone} onChange={e=>setPhone(e.target.value)} /></Field><Field label="Código do treinador" hint="Peça o código ao seu treinador. Você também pode informá-lo depois.">
                     <Input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="Ex.: A1B2C3D4" />
                   </Field>
                 </>

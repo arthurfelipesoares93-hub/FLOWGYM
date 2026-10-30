@@ -61,7 +61,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Forja — Gestão de alunos e treinos" },
+      { title: "Team Oliveira — Gestão de alunos e treinos" },
       { name: "description", content: "Plataforma para treinadores gerenciarem alunos, treinos com IA e mensalidades." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

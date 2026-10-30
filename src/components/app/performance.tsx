@@ -38,7 +38,8 @@ export function Performance({ studentId }: { studentId: string }) {
   const [exercise, setExercise] = useState("");
   if (q.isLoading) return <Loading />;
   if (q.error) return <ErrorBox error={q.error} />;
-  const { sessions, logs } = q.data!;
+  if (!q.data) return <Loading />;
+  const { sessions, logs } = q.data;
 
   const finished = sessions.filter((s) => s.finished_at);
   const weekly = Object.entries(finished.reduce<Record<string, number>>((a, s) => { const k = weekKey(s.performed_on); a[k] = (a[k] ?? 0) + 1; return a; }, {}))
