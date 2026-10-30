@@ -57,6 +57,13 @@
       "when": 1793401438304,
       "tag": "0007_suspended_photo_access_protection",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793401890972,
+      "tag": "0008_verified_goal_confirmation_and_public_branding",
+      "breakpoints": true
     }
   ]
 }
