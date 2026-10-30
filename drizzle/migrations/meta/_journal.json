@@ -50,6 +50,13 @@
       "when": 1793401408530,
       "tag": "0006_financial_input_and_relationship_frequency_validation",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793401438304,
+      "tag": "0007_suspended_photo_access_protection",
+      "breakpoints": true
     }
   ]
 }
