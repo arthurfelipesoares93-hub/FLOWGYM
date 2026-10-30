@@ -1,0 +1,10 @@
+ALTER FUNCTION public.goal_confirmation_guard() SECURITY DEFINER;
+REVOKE ALL ON FUNCTION public.goal_confirmation_guard() FROM PUBLIC,anon,authenticated;
+CREATE OR REPLACE FUNCTION public.contact_followup_sync() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ BEGIN IF NEW.lead_id IS NOT NULL AND NEW.status IN ('enviada','concluida') THEN UPDATE public.crm_leads SET last_contact_at=NEW.sent_at WHERE id=NEW.lead_id; END IF;RETURN NEW;END $$;
+CREATE TRIGGER contact_followup_sync AFTER INSERT OR UPDATE ON public.contact_history FOR EACH ROW EXECUTE FUNCTION public.contact_followup_sync();
+REVOKE ALL ON FUNCTION public.contact_followup_sync() FROM PUBLIC,anon,authenticated;
+CREATE OR REPLACE FUNCTION public.notify_before_suspension() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE trainer uuid;nm text;BEGIN SELECT s.trainer_id,p.full_name INTO trainer,nm FROM public.students s JOIN public.profiles p ON p.id=s.user_id WHERE s.id=NEW.student_id;PERFORM public.notify(trainer,'Prazo de suspensão financeira',coalesce(nm,'Aluno')||': confira a cobrança e os pagamentos antes do fim da tolerância.','/admin/alunos/'||NEW.student_id,'suspension_warning_'||NEW.id);RETURN NEW;END $$;
+CREATE TRIGGER charge_suspension_notice AFTER INSERT ON public.charges FOR EACH ROW EXECUTE FUNCTION public.notify_before_suspension();
+REVOKE ALL ON FUNCTION public.notify_before_suspension() FROM PUBLIC,anon,authenticated;
+CREATE OR REPLACE FUNCTION public.goal_input_guard() RETURNS trigger LANGUAGE plpgsql SET search_path=public AS $$ BEGIN IF length(NEW.description)>4000 OR length(NEW.notes)>4000 THEN RAISE EXCEPTION 'Observações excedem o limite';END IF;IF TG_OP='UPDATE' AND NEW.student_id<>OLD.student_id THEN RAISE EXCEPTION 'O aluno da meta não pode ser alterado';END IF;RETURN NEW;END $$;
+CREATE TRIGGER goal_input_validation BEFORE INSERT OR UPDATE ON public.student_goals FOR EACH ROW EXECUTE FUNCTION public.goal_input_guard();

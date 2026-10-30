@@ -36,6 +36,13 @@
       "when": 1793401084464,
       "tag": "0004_atomic_workout_proposals_and_daily_relationships",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793401346913,
+      "tag": "0005_relationship_validation_and_suspension_safeguards",
+      "breakpoints": true
     }
   ]
 }
