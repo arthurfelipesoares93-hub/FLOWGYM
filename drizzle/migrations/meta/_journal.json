@@ -15,6 +15,13 @@
       "when": 1793400544935,
       "tag": "0001_team_oliveira_integrated_management",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793400594082,
+      "tag": "0002_team_oliveira_access_and_notifications",
+      "breakpoints": true
     }
   ]
 }

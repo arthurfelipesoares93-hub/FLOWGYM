@@ -1285,6 +1285,15 @@ export type Database = {
         Returns: undefined
       }
       make_admin: { Args: { _email: string }; Returns: undefined }
+      manage_student_profile: {
+        Args: {
+          _birth: string
+          _name: string
+          _phone: string
+          _student_id: string
+        }
+        Returns: undefined
+      }
       my_access_status: { Args: never; Returns: Json }
       my_student_id: { Args: never; Returns: string }
       notify: {
@@ -1301,6 +1310,7 @@ export type Database = {
         Args: { _p: Database["public"]["Enums"]["plan_periodicity"] }
         Returns: string
       }
+      public_team_contact: { Args: never; Returns: Json }
       record_my_access: { Args: never; Returns: undefined }
       refund_payment: {
         Args: { _payment_id: string; _reason: string }
@@ -1316,6 +1326,11 @@ export type Database = {
           _period_label: string
         }
         Returns: string
+      }
+      relationship_daily_notifications: { Args: never; Returns: undefined }
+      restricted_student_access: {
+        Args: { _student_id: string }
+        Returns: boolean
       }
       review_workout_version: {
         Args: { _action: string; _notes: string; _version_id: string }
