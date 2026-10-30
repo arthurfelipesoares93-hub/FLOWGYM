@@ -20,7 +20,7 @@ export async function fetchVersion(versionId: string): Promise<FullVersion | nul
 }
 
 export function useVersion(versionId: string | undefined) {
-  return useQuery({ queryKey: ["version", versionId], enabled: !!versionId, queryFn: () => fetchVersion(versionId!) });
+  return useQuery({ queryKey: ["version", versionId], enabled: !!versionId, queryFn: () => versionId ? fetchVersion(versionId) : null });
 }
 
 export function useStudentVersions(studentId: string | undefined) {
@@ -28,7 +28,8 @@ export function useStudentVersions(studentId: string | undefined) {
     queryKey: ["versions", studentId],
     enabled: !!studentId,
     queryFn: async () => {
-      const { data, error } = await supabase.from("workout_versions").select("*").eq("student_id", studentId!).order("created_at", { ascending: false });
+      if (!studentId) return [];
+      const { data, error } = await supabase.from("workout_versions").select("*").eq("student_id", studentId).order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },

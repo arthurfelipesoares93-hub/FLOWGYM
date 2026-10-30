@@ -238,6 +238,165 @@ export type Database = {
           },
         ]
       }
+      contact_history: {
+        Row: {
+          birthday_year: number | null
+          contact_type: string
+          created_at: string
+          goal_id: string | null
+          id: string
+          lead_id: string | null
+          message: string
+          notes: string
+          reason: string
+          sent_at: string | null
+          status: string
+          student_id: string | null
+          trainer_id: string
+          updated_at: string
+        }
+        Insert: {
+          birthday_year?: number | null
+          contact_type: string
+          created_at?: string
+          goal_id?: string | null
+          id?: string
+          lead_id?: string | null
+          message?: string
+          notes?: string
+          reason?: string
+          sent_at?: string | null
+          status?: string
+          student_id?: string | null
+          trainer_id?: string
+          updated_at?: string
+        }
+        Update: {
+          birthday_year?: number | null
+          contact_type?: string
+          created_at?: string
+          goal_id?: string | null
+          id?: string
+          lead_id?: string | null
+          message?: string
+          notes?: string
+          reason?: string
+          sent_at?: string | null
+          status?: string
+          student_id?: string | null
+          trainer_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_history_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "student_goals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_history_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "crm_leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_history_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_leads: {
+        Row: {
+          birth_date: string | null
+          converted_student_id: string | null
+          created_at: string
+          email: string
+          first_contact_on: string
+          id: string
+          last_contact_at: string | null
+          name: string
+          next_contact_on: string | null
+          notes: string
+          objective: string
+          phone: string
+          source: string
+          status: string
+          trainer_id: string
+        }
+        Insert: {
+          birth_date?: string | null
+          converted_student_id?: string | null
+          created_at?: string
+          email?: string
+          first_contact_on?: string
+          id?: string
+          last_contact_at?: string | null
+          name: string
+          next_contact_on?: string | null
+          notes?: string
+          objective?: string
+          phone?: string
+          source?: string
+          status?: string
+          trainer_id?: string
+        }
+        Update: {
+          birth_date?: string | null
+          converted_student_id?: string | null
+          created_at?: string
+          email?: string
+          first_contact_on?: string
+          id?: string
+          last_contact_at?: string | null
+          name?: string
+          next_contact_on?: string | null
+          notes?: string
+          objective?: string
+          phone?: string
+          source?: string
+          status?: string
+          trainer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_leads_converted_student_id_fkey"
+            columns: ["converted_student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_actions: {
+        Row: {
+          action_key: string
+          action_on: string
+          completed_at: string
+          id: string
+          trainer_id: string
+        }
+        Insert: {
+          action_key: string
+          action_on?: string
+          completed_at?: string
+          id?: string
+          trainer_id?: string
+        }
+        Update: {
+          action_key?: string
+          action_on?: string
+          completed_at?: string
+          id?: string
+          trainer_id?: string
+        }
+        Relationships: []
+      }
       exercise_logs: {
         Row: {
           completed: boolean
@@ -489,30 +648,168 @@ export type Database = {
       }
       profiles: {
         Row: {
+          birth_date: string | null
           created_at: string
           email: string | null
           full_name: string
           id: string
+          phone: string
         }
         Insert: {
+          birth_date?: string | null
           created_at?: string
           email?: string | null
           full_name?: string
           id: string
+          phone?: string
         }
         Update: {
+          birth_date?: string | null
           created_at?: string
           email?: string | null
           full_name?: string
           id?: string
+          phone?: string
         }
         Relationships: []
       }
+      progress_records: {
+        Row: {
+          chest_cm: number | null
+          created_at: string
+          hip_cm: number | null
+          id: string
+          measured_on: string
+          notes: string
+          recorded_by: string
+          student_id: string
+          waist_cm: number | null
+          weight_kg: number
+        }
+        Insert: {
+          chest_cm?: number | null
+          created_at?: string
+          hip_cm?: number | null
+          id?: string
+          measured_on: string
+          notes?: string
+          recorded_by?: string
+          student_id: string
+          waist_cm?: number | null
+          weight_kg: number
+        }
+        Update: {
+          chest_cm?: number | null
+          created_at?: string
+          hip_cm?: number | null
+          id?: string
+          measured_on?: string
+          notes?: string
+          recorded_by?: string
+          student_id?: string
+          waist_cm?: number | null
+          weight_kg?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "progress_records_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_goals: {
+        Row: {
+          completed_at: string | null
+          confirmed_by: string | null
+          created_at: string
+          description: string
+          due_on: string | null
+          id: string
+          initial_value: number | null
+          metric: string
+          name: string
+          notes: string
+          status: string
+          student_id: string
+          target_value: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          description?: string
+          due_on?: string | null
+          id?: string
+          initial_value?: number | null
+          metric?: string
+          name: string
+          notes?: string
+          status?: string
+          student_id: string
+          target_value?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          description?: string
+          due_on?: string | null
+          id?: string
+          initial_value?: number | null
+          metric?: string
+          name?: string
+          notes?: string
+          status?: string
+          student_id?: string
+          target_value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_goals_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_private_notes: {
+        Row: {
+          notes: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          notes?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          notes?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_private_notes_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: true
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       students: {
         Row: {
+          accompaniment_started_on: string | null
+          accompaniment_status: string
           created_at: string
           data_consent_at: string | null
           id: string
+          last_access_at: string | null
           manual_block: boolean
           manual_block_at: string | null
           manual_block_reason: string | null
@@ -522,9 +819,12 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          accompaniment_started_on?: string | null
+          accompaniment_status?: string
           created_at?: string
           data_consent_at?: string | null
           id?: string
+          last_access_at?: string | null
           manual_block?: boolean
           manual_block_at?: string | null
           manual_block_reason?: string | null
@@ -534,9 +834,12 @@ export type Database = {
           user_id: string
         }
         Update: {
+          accompaniment_started_on?: string | null
+          accompaniment_status?: string
           created_at?: string
           data_consent_at?: string | null
           id?: string
+          last_access_at?: string | null
           manual_block?: boolean
           manual_block_at?: string | null
           manual_block_reason?: string | null
@@ -549,29 +852,71 @@ export type Database = {
       }
       trainer_settings: {
         Row: {
+          attention_days: number
+          auto_suspend: boolean
+          blue_theme: string
           business_name: string
+          contact_phone: string
           created_at: string
           due_soon_days: number
           invite_code: string
+          logo_url: string
+          message_templates: Json
+          notification_preferences: Json
           payment_instructions: string
+          pix_key: string
+          priority_days: number
+          professional_name: string
+          profile_photo_url: string
+          public_cta: string
+          special_days: number
+          suspension_days: number
           trainer_id: string
           updated_at: string
         }
         Insert: {
+          attention_days?: number
+          auto_suspend?: boolean
+          blue_theme?: string
           business_name?: string
+          contact_phone?: string
           created_at?: string
           due_soon_days?: number
           invite_code?: string
+          logo_url?: string
+          message_templates?: Json
+          notification_preferences?: Json
           payment_instructions?: string
+          pix_key?: string
+          priority_days?: number
+          professional_name?: string
+          profile_photo_url?: string
+          public_cta?: string
+          special_days?: number
+          suspension_days?: number
           trainer_id: string
           updated_at?: string
         }
         Update: {
+          attention_days?: number
+          auto_suspend?: boolean
+          blue_theme?: string
           business_name?: string
+          contact_phone?: string
           created_at?: string
           due_soon_days?: number
           invite_code?: string
+          logo_url?: string
+          message_templates?: Json
+          notification_preferences?: Json
           payment_instructions?: string
+          pix_key?: string
+          priority_days?: number
+          professional_name?: string
+          profile_photo_url?: string
+          public_cta?: string
+          special_days?: number
+          suspension_days?: number
           trainer_id?: string
           updated_at?: string
         }
@@ -664,6 +1009,7 @@ export type Database = {
           session_id: string
           sets: number
           version_id: string
+          video_url: string | null
         }
         Insert: {
           alternatives?: string | null
@@ -678,6 +1024,7 @@ export type Database = {
           session_id: string
           sets?: number
           version_id: string
+          video_url?: string | null
         }
         Update: {
           alternatives?: string | null
@@ -692,6 +1039,7 @@ export type Database = {
           session_id?: string
           sets?: number
           version_id?: string
+          video_url?: string | null
         }
         Relationships: [
           {
@@ -905,6 +1253,11 @@ export type Database = {
     }
     Functions: {
       can_access_student: { Args: { _student_id: string }; Returns: boolean }
+      convert_crm_lead: { Args: { _lead_id: string }; Returns: string }
+      create_manual_workout: {
+        Args: { _student_id: string; _title: string }
+        Returns: string
+      }
       create_workout_revision: {
         Args: { _version_id: string }
         Returns: string
@@ -932,6 +1285,15 @@ export type Database = {
         Returns: undefined
       }
       make_admin: { Args: { _email: string }; Returns: undefined }
+      manage_student_profile: {
+        Args: {
+          _birth: string
+          _name: string
+          _phone: string
+          _student_id: string
+        }
+        Returns: undefined
+      }
       my_access_status: { Args: never; Returns: Json }
       my_student_id: { Args: never; Returns: string }
       notify: {
@@ -948,6 +1310,8 @@ export type Database = {
         Args: { _p: Database["public"]["Enums"]["plan_periodicity"] }
         Returns: string
       }
+      public_team_contact: { Args: never; Returns: Json }
+      record_my_access: { Args: never; Returns: undefined }
       refund_payment: {
         Args: { _payment_id: string; _reason: string }
         Returns: undefined
@@ -963,12 +1327,21 @@ export type Database = {
         }
         Returns: string
       }
+      relationship_daily_notifications: { Args: never; Returns: undefined }
+      restricted_student_access: {
+        Args: { _student_id: string }
+        Returns: boolean
+      }
       review_workout_version: {
         Args: { _action: string; _notes: string; _version_id: string }
         Returns: undefined
       }
       run_daily_billing_notifications: { Args: never; Returns: undefined }
       safe_uuid: { Args: { _t: string }; Returns: string }
+      save_ai_workout: {
+        Args: { _model: string; _plan: Json; _student_id: string }
+        Returns: string
+      }
       set_consents: {
         Args: { _data: boolean; _photo: boolean }
         Returns: undefined
@@ -1000,6 +1373,10 @@ export type Database = {
         }[]
       }
       training_open_for_me: { Args: { _ts: string }; Returns: boolean }
+      update_student_management: {
+        Args: { _start: string; _status: string; _student_id: string }
+        Returns: undefined
+      }
       upsert_plan: {
         Args: {
           _active: boolean

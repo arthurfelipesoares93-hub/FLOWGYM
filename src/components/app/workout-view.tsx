@@ -35,6 +35,7 @@ export function WorkoutView({ v, actions }: { v: FullVersion; actions?: (session
                 </div>
                 {e.instructions && <p className="mt-1 text-sm text-muted-foreground">{e.instructions}</p>}
                 {e.alternatives && <p className="mt-1 text-xs"><b>Alternativas:</b> {e.alternatives}</p>}
+                {e.video_url && <a href={e.video_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex text-sm font-semibold text-primary">Assistir demonstração ↗</a>}
                 {e.notes && <p className="mt-1 text-xs"><b>Obs.:</b> {e.notes}</p>}
               </li>
             ))}

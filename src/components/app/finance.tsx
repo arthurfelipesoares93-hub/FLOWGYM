@@ -18,7 +18,7 @@ export function Finance({ d, trainer }: { d: StudentData; trainer: boolean }) {
   const [end, setEnd] = useState(d.plan?.end_date ?? '');
   const [due, setDue] = useState(d.plan?.first_due_date ?? todayISO());
   const [period, setPeriod] = useState<Enums<'plan_periodicity'>>(d.plan?.periodicity ?? 'mensal');
-  const [grace, setGrace] = useState(d.plan?.grace_days ?? 3);
+  const [grace, setGrace] = useState(d.plan?.grace_days ?? 7);
   const [active, setActive] = useState(d.plan?.active ?? true);
   const [payCharge, setPayCharge] = useState('');
   const charge = d.charges.find(c => c.id === payCharge);

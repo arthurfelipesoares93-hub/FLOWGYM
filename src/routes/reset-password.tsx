@@ -10,10 +10,11 @@ import { errMsg } from "@/lib/format";
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
-      { title: "Redefinir senha — Forja" },
+      { title: "Redefinir senha — Team Oliveira" },
       { name: "description", content: "Defina uma nova senha para sua conta." },
-      { property: "og:title", content: "Redefinir senha — Forja" },
+      { property: "og:title", content: "Redefinir senha — Team Oliveira" },
       { property: "og:description", content: "Defina uma nova senha para sua conta." },
+      {property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"},
     ],
   }),
   component: Reset,

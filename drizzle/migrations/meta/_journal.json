@@ -8,6 +8,34 @@
       "when": 1792876832176,
       "tag": "0000_fitness_platform_core",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793400544935,
+      "tag": "0001_team_oliveira_integrated_management",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793400594082,
+      "tag": "0002_team_oliveira_access_and_notifications",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793400900246,
+      "tag": "0003_restrict_internal_function_access",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793401084464,
+      "tag": "0004_atomic_workout_proposals_and_daily_relationships",
+      "breakpoints": true
     }
   ]
 }

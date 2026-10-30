@@ -1,5 +1,5 @@
 import { Link, Outlet } from "@tanstack/react-router";
-import { useState, type ComponentType } from "react";
+import { useState, useEffect, type ComponentType } from "react";
 import { Bell, LogOut, Menu, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,10 +26,11 @@ export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; not
   const signOut = useSignOut();
   const { data: unread } = useUnreadCount();
 
+  useEffect(()=>{if(!open)return;const close=(e:KeyboardEvent)=>{if(e.key==='Escape')setOpen(false)};document.addEventListener('keydown',close);document.body.style.overflow='hidden';return()=>{document.removeEventListener('keydown',close);document.body.style.overflow='';};},[open]);
   const sidebar = (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
       <div className="flex items-center justify-between px-5 py-5">
-        <span className="font-display text-2xl font-bold uppercase tracking-wider text-sidebar-accent-foreground">For<span className="text-sidebar-primary">ja</span></span>
+        <span className="font-display text-2xl font-bold uppercase tracking-wider text-sidebar-accent-foreground">Team <span className="text-sidebar-primary">Oliveira</span></span>
         <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(false)} aria-label="Fechar menu"><X className="h-5 w-5" /></Button>
       </div>
       <p className="px-5 pb-2 text-[11px] font-semibold uppercase tracking-widest text-sidebar-foreground/50">{roleLabel}</p>
@@ -64,13 +65,13 @@ export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; not
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-foreground/50" onClick={() => setOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-72">{sidebar}</div>
+          <div role="dialog" aria-modal="true" aria-label="Menu de navegação" className="absolute inset-y-0 left-0 w-72 max-w-[90vw]">{sidebar}</div>
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex items-center justify-between border-b bg-background/90 px-4 py-3 backdrop-blur lg:px-8">
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)} aria-label="Abrir menu"><Menu className="h-5 w-5" /></Button>
-          <div className="lg:hidden font-display text-xl font-bold uppercase">For<span className="text-success">ja</span></div>
+          <div className="lg:hidden font-display text-xl font-bold uppercase">Team <span className="text-primary">Oliveira</span></div>
           <div className="hidden lg:block" />
           <Link to={notificationsTo} className="relative rounded-full p-2 hover:bg-muted" aria-label="Notificações">
             <Bell className="h-5 w-5" />

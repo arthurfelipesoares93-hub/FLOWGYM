@@ -12,14 +12,19 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ComoFuncionaRouteImport } from './routes/como-funciona'
+import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as WilliamRouteImport } from './routes/william'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAlunoRouteImport } from './routes/_authenticated/aluno'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAlunosRouteImport } from './routes/_authenticated/admin.alunos'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
+import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated/admin.crm'
 import { Route as AuthenticatedAdminNotificacoesRouteImport } from './routes/_authenticated/admin.notificacoes'
+import { Route as AuthenticatedAdminRelatoriosRouteImport } from './routes/_authenticated/admin.relatorios'
 import { Route as AuthenticatedAlunoIndexRouteImport } from './routes/_authenticated/aluno.index'
 import { Route as AuthenticatedAlunoContaRouteImport } from './routes/_authenticated/aluno.conta'
 import { Route as AuthenticatedAlunoEvolucaoRouteImport } from './routes/_authenticated/aluno.evolucao'
@@ -44,9 +49,24 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComoFuncionaRoute = ComoFuncionaRouteImport.update({
+  id: '/como-funciona',
+  path: '/como-funciona',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WilliamRoute = WilliamRouteImport.update({
+  id: '/william',
+  path: '/william',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -81,10 +101,21 @@ const AuthenticatedAdminConfiguracoesRoute =
     path: '/configuracoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminCrmRoute = AuthenticatedAdminCrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminNotificacoesRoute =
   AuthenticatedAdminNotificacoesRouteImport.update({
     id: '/notificacoes',
     path: '/notificacoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminRelatoriosRoute =
+  AuthenticatedAdminRelatoriosRouteImport.update({
+    id: '/relatorios',
+    path: '/relatorios',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAlunoIndexRoute = AuthenticatedAlunoIndexRouteImport.update({
@@ -141,13 +172,18 @@ const AuthenticatedAdminAlunosStudentIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/como-funciona': typeof ComoFuncionaRoute
+  '/contato': typeof ContatoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/william': typeof WilliamRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/aluno': typeof AuthenticatedAlunoRouteWithChildren
   '/painel': typeof AuthenticatedPainelRoute
   '/admin/alunos': typeof AuthenticatedAdminAlunosRouteWithChildren
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
+  '/admin/relatorios': typeof AuthenticatedAdminRelatoriosRoute
   '/aluno/conta': typeof AuthenticatedAlunoContaRoute
   '/aluno/evolucao': typeof AuthenticatedAlunoEvolucaoRoute
   '/aluno/ficha': typeof AuthenticatedAlunoFichaRoute
@@ -162,11 +198,16 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/como-funciona': typeof ComoFuncionaRoute
+  '/contato': typeof ContatoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/william': typeof WilliamRoute
   '/painel': typeof AuthenticatedPainelRoute
   '/admin/alunos': typeof AuthenticatedAdminAlunosRouteWithChildren
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
+  '/admin/relatorios': typeof AuthenticatedAdminRelatoriosRoute
   '/aluno/conta': typeof AuthenticatedAlunoContaRoute
   '/aluno/evolucao': typeof AuthenticatedAlunoEvolucaoRoute
   '/aluno/ficha': typeof AuthenticatedAlunoFichaRoute
@@ -183,13 +224,18 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/como-funciona': typeof ComoFuncionaRoute
+  '/contato': typeof ContatoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/william': typeof WilliamRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/aluno': typeof AuthenticatedAlunoRouteWithChildren
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
   '/_authenticated/admin/alunos': typeof AuthenticatedAdminAlunosRouteWithChildren
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/_authenticated/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
+  '/_authenticated/admin/relatorios': typeof AuthenticatedAdminRelatoriosRoute
   '/_authenticated/aluno/conta': typeof AuthenticatedAlunoContaRoute
   '/_authenticated/aluno/evolucao': typeof AuthenticatedAlunoEvolucaoRoute
   '/_authenticated/aluno/ficha': typeof AuthenticatedAlunoFichaRoute
@@ -206,13 +252,18 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/como-funciona'
+    | '/contato'
     | '/reset-password'
+    | '/william'
     | '/admin'
     | '/aluno'
     | '/painel'
     | '/admin/alunos'
     | '/admin/configuracoes'
+    | '/admin/crm'
     | '/admin/notificacoes'
+    | '/admin/relatorios'
     | '/aluno/conta'
     | '/aluno/evolucao'
     | '/aluno/ficha'
@@ -227,11 +278,16 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/como-funciona'
+    | '/contato'
     | '/reset-password'
+    | '/william'
     | '/painel'
     | '/admin/alunos'
     | '/admin/configuracoes'
+    | '/admin/crm'
     | '/admin/notificacoes'
+    | '/admin/relatorios'
     | '/aluno/conta'
     | '/aluno/evolucao'
     | '/aluno/ficha'
@@ -247,13 +303,18 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/como-funciona'
+    | '/contato'
     | '/reset-password'
+    | '/william'
     | '/_authenticated/admin'
     | '/_authenticated/aluno'
     | '/_authenticated/painel'
     | '/_authenticated/admin/alunos'
     | '/_authenticated/admin/configuracoes'
+    | '/_authenticated/admin/crm'
     | '/_authenticated/admin/notificacoes'
+    | '/_authenticated/admin/relatorios'
     | '/_authenticated/aluno/conta'
     | '/_authenticated/aluno/evolucao'
     | '/_authenticated/aluno/ficha'
@@ -270,7 +331,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ComoFuncionaRoute: typeof ComoFuncionaRoute
+  ContatoRoute: typeof ContatoRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  WilliamRoute: typeof WilliamRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -296,11 +360,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/como-funciona': {
+      id: '/como-funciona'
+      path: '/como-funciona'
+      fullPath: '/como-funciona'
+      preLoaderRoute: typeof ComoFuncionaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/william': {
+      id: '/william'
+      path: '/william'
+      fullPath: '/william'
+      preLoaderRoute: typeof WilliamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -345,11 +430,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminConfiguracoesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/crm': {
+      id: '/_authenticated/admin/crm'
+      path: '/crm'
+      fullPath: '/admin/crm'
+      preLoaderRoute: typeof AuthenticatedAdminCrmRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/notificacoes': {
       id: '/_authenticated/admin/notificacoes'
       path: '/notificacoes'
       fullPath: '/admin/notificacoes'
       preLoaderRoute: typeof AuthenticatedAdminNotificacoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/relatorios': {
+      id: '/_authenticated/admin/relatorios'
+      path: '/relatorios'
+      fullPath: '/admin/relatorios'
+      preLoaderRoute: typeof AuthenticatedAdminRelatoriosRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/aluno/': {
@@ -436,14 +535,18 @@ const AuthenticatedAdminAlunosRouteWithChildren =
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAlunosRoute: typeof AuthenticatedAdminAlunosRouteWithChildren
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
+  AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRoute
   AuthenticatedAdminNotificacoesRoute: typeof AuthenticatedAdminNotificacoesRoute
+  AuthenticatedAdminRelatoriosRoute: typeof AuthenticatedAdminRelatoriosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAlunosRoute: AuthenticatedAdminAlunosRouteWithChildren,
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
+  AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRoute,
   AuthenticatedAdminNotificacoesRoute: AuthenticatedAdminNotificacoesRoute,
+  AuthenticatedAdminRelatoriosRoute: AuthenticatedAdminRelatoriosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
@@ -494,7 +597,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ComoFuncionaRoute: ComoFuncionaRoute,
+  ContatoRoute: ContatoRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  WilliamRoute: WilliamRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
