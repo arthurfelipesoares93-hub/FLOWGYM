@@ -1338,6 +1338,10 @@ export type Database = {
       }
       run_daily_billing_notifications: { Args: never; Returns: undefined }
       safe_uuid: { Args: { _t: string }; Returns: string }
+      save_ai_workout: {
+        Args: { _model: string; _plan: Json; _student_id: string }
+        Returns: string
+      }
       set_consents: {
         Args: { _data: boolean; _photo: boolean }
         Returns: undefined
