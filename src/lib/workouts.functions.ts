@@ -5,11 +5,11 @@ import { z } from "zod";
 const MODEL = "openai/gpt-6-astra";
 
 const exerciseSchema = z.object({
-  name: z.string(),
+  name: z.string().trim().min(1).max(150),
   muscle_group: z.string(),
-  sets: z.number(),
+  sets: z.number().int().min(1).max(20),
   reps: z.string(),
-  rest_seconds: z.number(),
+  rest_seconds: z.number().int().min(30).max(240),
   instructions: z.string(),
   alternatives: z.string(),
   notes: z.string().nullable(),
@@ -23,11 +23,11 @@ const planSchema = z.object({
   requires_clearance: z.boolean(),
   sessions: z.array(
     z.object({
-      name: z.string(),
+      name: z.string().trim().min(1).max(150),
       day_of_week: z.string(),
       muscle_groups: z.string(),
       notes: z.string().nullable(),
-      exercises: z.array(exerciseSchema),
+      exercises: z.array(exerciseSchema).min(4).max(8),
     }),
   ),
 });
@@ -135,48 +135,12 @@ Regras:
     }
     if (!plan?.sessions?.length) throw new Error("A IA não retornou sessões de treino.");
 
-    // Privileged inserts only after the caller was authorized above. Status is ALWAYS 'pendente'.
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: existing } = await supabaseAdmin.from("workouts").select("id").eq("student_id", data.studentId).limit(1).maybeSingle();
-    let workoutId = existing?.id;
-    if (!workoutId) {
-      const { data: w, error } = await supabaseAdmin.from("workouts").insert({ student_id: data.studentId, title: plan.title.slice(0, 120), created_by: userId }).select("id").single();
-      if (error) throw error;
-      workoutId = w.id;
-    }
-    const { data: maxV } = await supabaseAdmin.from("workout_versions").select("version_number").eq("workout_id", workoutId).order("version_number", { ascending: false }).limit(1).maybeSingle();
-    const { data: version, error: vErr } = await supabaseAdmin
-      .from("workout_versions")
-      .insert({
-        workout_id: workoutId, student_id: data.studentId, version_number: (maxV?.version_number ?? 0) + 1,
-        status: "pendente", source: "ia", ai_model: MODEL, summary: plan.summary, weekly_split: plan.weekly_split,
-        progression: plan.progression, cautions: plan.cautions,
-        requires_clearance: plan.requires_clearance || !!(a.injuries || a.current_pain || a.medical_restrictions || a.movement_limitations),
-        created_by: userId,
-      })
-      .select("id")
-      .single();
-    if (vErr) throw vErr;
-
-    for (const [i, s] of plan.sessions.entries()) {
-      const { data: sess, error } = await supabaseAdmin
-        .from("workout_sessions")
-        .insert({ version_id: version.id, position: i, name: s.name, day_of_week: s.day_of_week, muscle_groups: s.muscle_groups, notes: s.notes })
-        .select("id")
-        .single();
-      if (error) throw error;
-      const rows = s.exercises.map((e, j) => ({
-        session_id: sess.id, version_id: version.id, position: j, name: e.name, muscle_group: e.muscle_group,
-        sets: Math.min(20, Math.max(1, Math.round(e.sets || 3))), reps: e.reps || "10",
-        rest_seconds: Math.min(900, Math.max(0, Math.round(e.rest_seconds || 60))),
-        instructions: e.instructions, alternatives: e.alternatives, notes: e.notes,
-      }));
-      const { error: exErr } = await supabaseAdmin.from("workout_exercises").insert(rows);
-      if (exErr) throw exErr;
-    }
-    await supabaseAdmin.from("workout_reviews").insert({ version_id: version.id, action: "gerado_ia", notes: `Gerado por ${MODEL}`, reviewer_id: userId });
-    await supabaseAdmin.from("audit_logs").insert({ actor_id: userId, student_id: data.studentId, action: "treino_gerado_ia", entity: "workout_versions", entity_id: version.id, details: { modelo: MODEL } });
-    return { versionId: version.id };
+    plan = planSchema.parse(plan);
+    if(plan.sessions.length !== assessment.days_per_week) throw new Error('A proposta não corresponde à disponibilidade semanal. Gere novamente.');
+    plan.requires_clearance ||= !!(a.injuries || a.current_pain || a.medical_restrictions || a.movement_limitations);
+    const saved=await supabase.rpc('save_ai_workout',{_student_id:data.studentId,_plan:plan,_model:MODEL});
+    if(saved.error)throw new Error(saved.error.message);
+    return {versionId:saved.data};
   });
 
 export const deleteMyAccount = createServerFn({ method: "POST" })
