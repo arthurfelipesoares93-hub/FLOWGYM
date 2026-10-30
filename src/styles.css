@@ -106,11 +106,11 @@
 }
 
 .william-hero { min-height: 580px; }
-.william-photo { object-position: 65% 38%; }
+.william-photo { object-position: center top; width: 58%; left: auto; right: 0; }
 .william-shade { background: linear-gradient(90deg,var(--sidebar) 0%, color-mix(in oklab,var(--sidebar) 90%,transparent) 36%,color-mix(in oklab,var(--sidebar) 5%,transparent) 75%); }
 @media(max-width:640px) {
  .william-hero { min-height: 565px; }
- .william-photo { object-position: 62% 30%; }
+ .william-photo { object-position: 62% 30%; width: 100%; }
  .william-shade { background: linear-gradient(0deg,var(--sidebar) 0%,color-mix(in oklab,var(--sidebar) 94%,transparent) 26%,color-mix(in oklab,var(--sidebar) 15%,transparent) 75%); }
 }
 @media(prefers-reduced-motion:no-preference) { .enter-soft { animation: enter-soft .5s ease-out both; } }
