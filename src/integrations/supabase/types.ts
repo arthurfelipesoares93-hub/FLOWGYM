@@ -36,6 +36,8 @@ export type Database = {
           movement_limitations: string | null
           other_activities: string | null
           other_notes: string | null
+          payment_confirmed_at: string | null
+          payment_declared: string | null
           reviewed_at: string | null
           session_minutes: number | null
           student_id: string
@@ -66,6 +68,8 @@ export type Database = {
           movement_limitations?: string | null
           other_activities?: string | null
           other_notes?: string | null
+          payment_confirmed_at?: string | null
+          payment_declared?: string | null
           reviewed_at?: string | null
           session_minutes?: number | null
           student_id: string
@@ -96,6 +100,8 @@ export type Database = {
           movement_limitations?: string | null
           other_activities?: string | null
           other_notes?: string | null
+          payment_confirmed_at?: string | null
+          payment_declared?: string | null
           reviewed_at?: string | null
           session_minutes?: number | null
           student_id?: string
@@ -1253,6 +1259,16 @@ export type Database = {
     }
     Functions: {
       can_access_student: { Args: { _student_id: string }; Returns: boolean }
+      confirm_enrollment: {
+        Args: {
+          _fee: number
+          _method: string
+          _paid_on: string
+          _periodicity: Database["public"]["Enums"]["plan_periodicity"]
+          _student_id: string
+        }
+        Returns: string
+      }
       convert_crm_lead: { Args: { _lead_id: string }; Returns: string }
       create_manual_workout: {
         Args: { _student_id: string; _title: string }

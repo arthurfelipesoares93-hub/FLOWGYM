@@ -64,6 +64,13 @@
       "when": 1793401890972,
       "tag": "0008_verified_goal_confirmation_and_public_branding",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793411169262,
+      "tag": "0009_enrollment_payment_confirmation",
+      "breakpoints": true
     }
   ]
 }
