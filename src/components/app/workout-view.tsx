@@ -1,5 +1,7 @@
-import { AlertTriangle } from "lucide-react";
+import { useState } from "react";
+import { AlertTriangle, Play } from "lucide-react";
 import type { FullVersion } from "./workout-data";
+import { exerciseMedia } from "./exercise-media";
 
 export function WorkoutView({ v, actions }: { v: FullVersion; actions?: (sessionId: string) => React.ReactNode }) {
   return (
@@ -27,8 +29,10 @@ export function WorkoutView({ v, actions }: { v: FullVersion; actions?: (session
             {actions?.(s.id)}
           </div>
           <ol className="divide-y">
-            {s.exercises.map((e, i) => (
-              <li key={e.id} className="p-4">
+            {s.exercises.map((e, i) => { const m = exerciseMedia(e.name, e.muscle_group); return (
+              <li key={e.id} className="flex flex-col gap-4 p-4 sm:flex-row">
+                {m && <ExerciseMedia m={m} name={e.name} />}
+                <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <p className="font-semibold">{i + 1}. {e.name} <span className="text-xs font-normal text-muted-foreground">{e.muscle_group}</span></p>
                   <p className="text-sm font-semibold">{e.sets} × {e.reps} <span className="font-normal text-muted-foreground">· descanso {e.rest_seconds}s</span></p>
@@ -37,12 +41,29 @@ export function WorkoutView({ v, actions }: { v: FullVersion; actions?: (session
                 {e.alternatives && <p className="mt-1 text-xs"><b>Alternativas:</b> {e.alternatives}</p>}
                 {e.video_url && <a href={e.video_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex text-sm font-semibold text-primary">Assistir demonstração ↗</a>}
                 {e.notes && <p className="mt-1 text-xs"><b>Obs.:</b> {e.notes}</p>}
+                </div>
               </li>
-            ))}
+            ); })}
           </ol>
           {s.notes && <p className="border-t px-4 py-2 text-xs text-muted-foreground">{s.notes}</p>}
         </div>
       ))}
+    </div>
+  );
+}
+
+function ExerciseMedia({ m, name }: { m: NonNullable<ReturnType<typeof exerciseMedia>>; name: string }) {
+  const [play, setPlay] = useState(false);
+  return (
+    <div className="relative w-full shrink-0 overflow-hidden rounded-lg bg-muted sm:w-40">
+      {play && m.video
+        ? <video src={m.video} poster={m.image} autoPlay loop muted playsInline className="aspect-square w-full object-cover" />
+        : <img src={m.image} alt={`Ilustração 3D: ${name}`} loading="lazy" width={816} height={816} className="aspect-square w-full object-cover" />}
+      {m.video && !play && (
+        <button type="button" onClick={() => setPlay(true)} className="absolute inset-x-2 bottom-2 inline-flex items-center justify-center gap-1 rounded-md bg-background/90 px-2 py-1 text-xs font-semibold text-foreground">
+          <Play className="h-3 w-3" />Ver movimento
+        </button>
+      )}
     </div>
   );
 }
