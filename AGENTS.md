@@ -16,3 +16,4 @@
 - Private trainer notes use a dedicated trainer-only table and explicit student projections; table-wide student reads must not expose deprecated notes.
 - Relationship message state is persisted separately from WhatsApp opening and copying; only an explicit sent action records delivery.
 - Management queries exclude the trainer's legacy self-student row from business indicators while preserving the row and its data.
+- Sitemap URLs derive from required route staticData decisions; exclude the authenticated subtree and auth flows to keep private surfaces undiscoverable.

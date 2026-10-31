@@ -10,7 +10,7 @@ import type {AccessStatus} from '@/lib/auth';
 import { Shell } from '@/components/app/shell';
 import { PortalError, PortalNotFound } from '@/components/app/route-feedback';
 
-export const Route = createFileRoute("/_authenticated/aluno")({
+export const Route = createFileRoute("/_authenticated/aluno")({ staticData: { sitemap: false },
   loader: async ({ context }) => { const p = await context.queryClient.ensureQueryData(portalOptions); if (p.admin) throw redirect({ to: '/admin' }); },
   errorComponent: PortalError,
   notFoundComponent: PortalNotFound,

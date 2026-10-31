@@ -10,7 +10,7 @@ import { errMsg } from "@/lib/format";
 
 type Search = { mode?: "signup" | "login" | undefined; code?:string|undefined; email?:string|undefined; name?:string|undefined; phone?:string|undefined };
 
-export const Route = createFileRoute("/auth")({
+export const Route = createFileRoute("/auth")({ staticData: { sitemap: false },
   validateSearch: (s: Record<string, unknown>): Search => ({ mode: s["mode"] === "signup" ? "signup" : undefined,code:typeof s["code"]==="string"?s["code"]:undefined,email:typeof s["email"]==="string"?s["email"]:undefined,name:typeof s["name"]==="string"?s["name"]:undefined,phone:typeof s["phone"]==="string"?s["phone"]:undefined }),
   head: () => ({
     meta: [
