@@ -20,7 +20,6 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAlunoRouteImport } from './routes/_authenticated/aluno'
 import { Route as AuthenticatedPainelRouteImport } from './routes/_authenticated/painel'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
-import { Route as AuthenticatedAdminAlunosRouteImport } from './routes/_authenticated/admin.alunos'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
 import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated/admin.crm'
 import { Route as AuthenticatedAdminNotificacoesRouteImport } from './routes/_authenticated/admin.notificacoes'
@@ -33,6 +32,7 @@ import { Route as AuthenticatedAlunoFinanceiroRouteImport } from './routes/_auth
 import { Route as AuthenticatedAlunoFotosRouteImport } from './routes/_authenticated/aluno.fotos'
 import { Route as AuthenticatedAlunoNotificacoesRouteImport } from './routes/_authenticated/aluno.notificacoes'
 import { Route as AuthenticatedAlunoTreinoRouteImport } from './routes/_authenticated/aluno.treino'
+import { Route as AuthenticatedAdminAlunosIndexRouteImport } from './routes/_authenticated/admin.alunos.index'
 import { Route as AuthenticatedAdminAlunosStudentIdRouteImport } from './routes/_authenticated/admin.alunos.$studentId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -89,12 +89,6 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
-const AuthenticatedAdminAlunosRoute =
-  AuthenticatedAdminAlunosRouteImport.update({
-    id: '/alunos',
-    path: '/alunos',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
 const AuthenticatedAdminConfiguracoesRoute =
   AuthenticatedAdminConfiguracoesRouteImport.update({
     id: '/configuracoes',
@@ -162,11 +156,17 @@ const AuthenticatedAlunoTreinoRoute =
     path: '/treino',
     getParentRoute: () => AuthenticatedAlunoRoute,
   } as any)
+const AuthenticatedAdminAlunosIndexRoute =
+  AuthenticatedAdminAlunosIndexRouteImport.update({
+    id: '/alunos/',
+    path: '/alunos/',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminAlunosStudentIdRoute =
   AuthenticatedAdminAlunosStudentIdRouteImport.update({
-    id: '/$studentId',
-    path: '/$studentId',
-    getParentRoute: () => AuthenticatedAdminAlunosRoute,
+    id: '/alunos/$studentId',
+    path: '/alunos/$studentId',
+    getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -179,7 +179,6 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/aluno': typeof AuthenticatedAlunoRouteWithChildren
   '/painel': typeof AuthenticatedPainelRoute
-  '/admin/alunos': typeof AuthenticatedAdminAlunosRouteWithChildren
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
@@ -194,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/aluno/': typeof AuthenticatedAlunoIndexRoute
   '/admin/alunos/$studentId': typeof AuthenticatedAdminAlunosStudentIdRoute
+  '/admin/alunos/': typeof AuthenticatedAdminAlunosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -203,7 +203,6 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/william': typeof WilliamRoute
   '/painel': typeof AuthenticatedPainelRoute
-  '/admin/alunos': typeof AuthenticatedAdminAlunosRouteWithChildren
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
@@ -218,6 +217,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/aluno': typeof AuthenticatedAlunoIndexRoute
   '/admin/alunos/$studentId': typeof AuthenticatedAdminAlunosStudentIdRoute
+  '/admin/alunos': typeof AuthenticatedAdminAlunosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -231,7 +231,6 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/aluno': typeof AuthenticatedAlunoRouteWithChildren
   '/_authenticated/painel': typeof AuthenticatedPainelRoute
-  '/_authenticated/admin/alunos': typeof AuthenticatedAdminAlunosRouteWithChildren
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/_authenticated/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
@@ -246,6 +245,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/aluno/': typeof AuthenticatedAlunoIndexRoute
   '/_authenticated/admin/alunos/$studentId': typeof AuthenticatedAdminAlunosStudentIdRoute
+  '/_authenticated/admin/alunos/': typeof AuthenticatedAdminAlunosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -259,7 +259,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/aluno'
     | '/painel'
-    | '/admin/alunos'
     | '/admin/configuracoes'
     | '/admin/crm'
     | '/admin/notificacoes'
@@ -274,6 +273,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/aluno/'
     | '/admin/alunos/$studentId'
+    | '/admin/alunos/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -283,7 +283,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/william'
     | '/painel'
-    | '/admin/alunos'
     | '/admin/configuracoes'
     | '/admin/crm'
     | '/admin/notificacoes'
@@ -298,6 +297,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/aluno'
     | '/admin/alunos/$studentId'
+    | '/admin/alunos'
   id:
     | '__root__'
     | '/'
@@ -310,7 +310,6 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/aluno'
     | '/_authenticated/painel'
-    | '/_authenticated/admin/alunos'
     | '/_authenticated/admin/configuracoes'
     | '/_authenticated/admin/crm'
     | '/_authenticated/admin/notificacoes'
@@ -325,6 +324,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/_authenticated/aluno/'
     | '/_authenticated/admin/alunos/$studentId'
+    | '/_authenticated/admin/alunos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -416,13 +416,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/alunos': {
-      id: '/_authenticated/admin/alunos'
-      path: '/alunos'
-      fullPath: '/admin/alunos'
-      preLoaderRoute: typeof AuthenticatedAdminAlunosRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
     '/_authenticated/admin/configuracoes': {
       id: '/_authenticated/admin/configuracoes'
       path: '/configuracoes'
@@ -507,47 +500,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAlunoTreinoRouteImport
       parentRoute: typeof AuthenticatedAlunoRoute
     }
+    '/_authenticated/admin/alunos/': {
+      id: '/_authenticated/admin/alunos/'
+      path: '/alunos'
+      fullPath: '/admin/alunos/'
+      preLoaderRoute: typeof AuthenticatedAdminAlunosIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/alunos/$studentId': {
       id: '/_authenticated/admin/alunos/$studentId'
-      path: '/$studentId'
+      path: '/alunos/$studentId'
       fullPath: '/admin/alunos/$studentId'
       preLoaderRoute: typeof AuthenticatedAdminAlunosStudentIdRouteImport
-      parentRoute: typeof AuthenticatedAdminAlunosRoute
+      parentRoute: typeof AuthenticatedAdminRoute
     }
   }
 }
 
-interface AuthenticatedAdminAlunosRouteChildren {
-  AuthenticatedAdminAlunosStudentIdRoute: typeof AuthenticatedAdminAlunosStudentIdRoute
-}
-
-const AuthenticatedAdminAlunosRouteChildren: AuthenticatedAdminAlunosRouteChildren =
-  {
-    AuthenticatedAdminAlunosStudentIdRoute:
-      AuthenticatedAdminAlunosStudentIdRoute,
-  }
-
-const AuthenticatedAdminAlunosRouteWithChildren =
-  AuthenticatedAdminAlunosRoute._addFileChildren(
-    AuthenticatedAdminAlunosRouteChildren,
-  )
-
 interface AuthenticatedAdminRouteChildren {
-  AuthenticatedAdminAlunosRoute: typeof AuthenticatedAdminAlunosRouteWithChildren
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
   AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRoute
   AuthenticatedAdminNotificacoesRoute: typeof AuthenticatedAdminNotificacoesRoute
   AuthenticatedAdminRelatoriosRoute: typeof AuthenticatedAdminRelatoriosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminAlunosStudentIdRoute: typeof AuthenticatedAdminAlunosStudentIdRoute
+  AuthenticatedAdminAlunosIndexRoute: typeof AuthenticatedAdminAlunosIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
-  AuthenticatedAdminAlunosRoute: AuthenticatedAdminAlunosRouteWithChildren,
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
   AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRoute,
   AuthenticatedAdminNotificacoesRoute: AuthenticatedAdminNotificacoesRoute,
   AuthenticatedAdminRelatoriosRoute: AuthenticatedAdminRelatoriosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminAlunosStudentIdRoute:
+    AuthenticatedAdminAlunosStudentIdRoute,
+  AuthenticatedAdminAlunosIndexRoute: AuthenticatedAdminAlunosIndexRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =
