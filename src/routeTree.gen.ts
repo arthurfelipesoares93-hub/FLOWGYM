@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ComoFuncionaRouteImport } from './routes/como-funciona'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as WilliamRouteImport } from './routes/william'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAlunoRouteImport } from './routes/_authenticated/aluno'
@@ -62,6 +63,11 @@ const ContatoRoute = ContatoRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WilliamRoute = WilliamRouteImport.update({
@@ -175,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/como-funciona': typeof ComoFuncionaRoute
   '/contato': typeof ContatoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/william': typeof WilliamRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/aluno': typeof AuthenticatedAlunoRouteWithChildren
@@ -201,6 +208,7 @@ export interface FileRoutesByTo {
   '/como-funciona': typeof ComoFuncionaRoute
   '/contato': typeof ContatoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/william': typeof WilliamRoute
   '/painel': typeof AuthenticatedPainelRoute
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
@@ -227,6 +235,7 @@ export interface FileRoutesById {
   '/como-funciona': typeof ComoFuncionaRoute
   '/contato': typeof ContatoRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/william': typeof WilliamRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/aluno': typeof AuthenticatedAlunoRouteWithChildren
@@ -255,6 +264,7 @@ export interface FileRouteTypes {
     | '/como-funciona'
     | '/contato'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/william'
     | '/admin'
     | '/aluno'
@@ -281,6 +291,7 @@ export interface FileRouteTypes {
     | '/como-funciona'
     | '/contato'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/william'
     | '/painel'
     | '/admin/configuracoes'
@@ -306,6 +317,7 @@ export interface FileRouteTypes {
     | '/como-funciona'
     | '/contato'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/william'
     | '/_authenticated/admin'
     | '/_authenticated/aluno'
@@ -334,6 +346,7 @@ export interface RootRouteChildren {
   ComoFuncionaRoute: typeof ComoFuncionaRoute
   ContatoRoute: typeof ContatoRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WilliamRoute: typeof WilliamRoute
 }
 
@@ -379,6 +392,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/william': {
@@ -588,6 +608,7 @@ const rootRouteChildren: RootRouteChildren = {
   ComoFuncionaRoute: ComoFuncionaRoute,
   ContatoRoute: ContatoRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   WilliamRoute: WilliamRoute,
 }
 export const routeTree = rootRouteImport
