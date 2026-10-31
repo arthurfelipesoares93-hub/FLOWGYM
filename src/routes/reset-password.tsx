@@ -7,9 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Field } from "@/components/app/ui-bits";
 import { errMsg } from "@/lib/format";
 
-export const Route = createFileRoute("/reset-password")({
+export const Route = createFileRoute("/reset-password")({ staticData: { sitemap: false },
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex" },
       { title: "Redefinir senha — Team Oliveira" },
       { name: "description", content: "Defina uma nova senha para sua conta." },
       { property: "og:title", content: "Redefinir senha — Team Oliveira" },

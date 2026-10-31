@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/_authenticated/painel")({
+export const Route = createFileRoute("/_authenticated/painel")({ staticData: { sitemap: false },
   head: () => ({ meta: [{ title: "Seu painel — Team Oliveira" }, { name: "description", content: "Acesse seu acompanhamento na Team Oliveira." }, { property: "og:title", content: "Seu painel — Team Oliveira" }, { property: "og:description", content: "Acesse seu acompanhamento na Team Oliveira." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   beforeLoad: async () => {
     const { data: u } = await supabase.auth.getUser();
