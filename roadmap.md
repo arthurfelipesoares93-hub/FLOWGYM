@@ -12,3 +12,4 @@
 - [ ] Verify live AI execution — requires a linked student with submitted assessment and consent.
 - [ ] Configure real phone, Pix, logo and exercise videos — awaiting the personal's actual information/assets.
 - [ ] Complete video uploads, notification preferences, retention/access-history controls and remaining report dimensions — not yet implemented.
+- [x] Produce William's 16:9 presentation video (male narration, music).
