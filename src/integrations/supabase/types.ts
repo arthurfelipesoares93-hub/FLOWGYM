@@ -1143,6 +1143,7 @@ export type Database = {
       workout_versions: {
         Row: {
           ai_model: string | null
+          ai_original_plan: Json | null
           cautions: string | null
           created_at: string
           created_by: string | null
@@ -1165,6 +1166,7 @@ export type Database = {
         }
         Insert: {
           ai_model?: string | null
+          ai_original_plan?: Json | null
           cautions?: string | null
           created_at?: string
           created_by?: string | null
@@ -1187,6 +1189,7 @@ export type Database = {
         }
         Update: {
           ai_model?: string | null
+          ai_original_plan?: Json | null
           cautions?: string | null
           created_at?: string
           created_by?: string | null
