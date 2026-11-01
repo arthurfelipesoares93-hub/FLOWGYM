@@ -115,7 +115,10 @@ Regras:
 - progression: progressão planejada para as próximas 4 a 8 semanas.
 - Use o histórico de desempenho apenas como referência de cargas e aderência.`;
 
-    const prompt = `Ficha do aluno:\n${JSON.stringify(ficha, null, 2)}\n\nHistórico recente:\n${JSON.stringify(historico)}\n\nObservações do solicitante: ${data.extraNotes ?? "nenhuma"}`;
+    const { data: settings } = await supabase.from("trainer_settings").select("methodology_guide").eq("trainer_id", userId).maybeSingle();
+    const guide = settings?.methodology_guide?.trim();
+    const methodology = guide ? `\n\nMETODOLOGIA DO TREINADOR (siga estas preferências como prioridade, desde que respeitem as regras de segurança acima):\n${guide.slice(0, 10000)}` : "";
+    const prompt = `Ficha do aluno:\n${JSON.stringify(ficha, null, 2)}\n\nHistórico recente:\n${JSON.stringify(historico)}\n\nObservações do solicitante: ${data.extraNotes ?? "nenhuma"}${methodology}`;
 
     let plan: z.infer<typeof planSchema>;
     try {
