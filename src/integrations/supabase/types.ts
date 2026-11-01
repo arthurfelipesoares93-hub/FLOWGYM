@@ -868,6 +868,7 @@ export type Database = {
           invite_code: string
           logo_url: string
           message_templates: Json
+          methodology_guide: string
           notification_preferences: Json
           payment_instructions: string
           pix_key: string
@@ -891,6 +892,7 @@ export type Database = {
           invite_code?: string
           logo_url?: string
           message_templates?: Json
+          methodology_guide?: string
           notification_preferences?: Json
           payment_instructions?: string
           pix_key?: string
@@ -914,6 +916,7 @@ export type Database = {
           invite_code?: string
           logo_url?: string
           message_templates?: Json
+          methodology_guide?: string
           notification_preferences?: Json
           payment_instructions?: string
           pix_key?: string

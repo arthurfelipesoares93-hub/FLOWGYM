@@ -1,0 +1,1 @@
+ALTER TABLE public.trainer_settings ADD COLUMN IF NOT EXISTS methodology_guide text NOT NULL DEFAULT '';
