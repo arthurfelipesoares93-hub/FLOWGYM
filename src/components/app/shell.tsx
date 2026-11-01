@@ -7,6 +7,7 @@ import { useMe, useSignOut } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import {usePublicBrand} from '@/lib/public-brand';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/app/theme-toggle';
 
 export type NavItem = { to: string; label: string; icon: ComponentType<{ className?: string }>; exact?: boolean };
 
@@ -75,12 +76,15 @@ export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; not
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)} aria-label="Abrir menu"><Menu className="h-5 w-5" /></Button>
           <div className="lg:hidden font-display text-xl font-bold uppercase">{brand?.brand||'Team Oliveira'}</div>
           <div className="hidden lg:block" />
+          <div className="flex items-center gap-1">
+          <ThemeToggle />
           <Link to={notificationsTo} className="relative rounded-full p-2 hover:bg-muted" aria-label="Notificações">
             <Bell className="h-5 w-5" />
             {!!unread && (
               <span className={cn("absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground")}>{unread > 99 ? "99+" : unread}</span>
             )}
           </Link>
+          </div>
         </header>
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 lg:px-8">
           <Outlet />
