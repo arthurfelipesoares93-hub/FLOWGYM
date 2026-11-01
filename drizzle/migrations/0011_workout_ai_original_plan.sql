@@ -1,0 +1,1 @@
+ALTER TABLE public.workout_versions ADD COLUMN IF NOT EXISTS ai_original_plan jsonb;

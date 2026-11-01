@@ -118,7 +118,28 @@ Regras:
     const { data: settings } = await supabase.from("trainer_settings").select("methodology_guide").eq("trainer_id", userId).maybeSingle();
     const guide = settings?.methodology_guide?.trim();
     const methodology = guide ? `\n\nMETODOLOGIA DO TREINADOR (siga estas preferências como prioridade, desde que respeitem as regras de segurança acima):\n${guide.slice(0, 10000)}` : "";
-    const prompt = `Ficha do aluno:\n${JSON.stringify(ficha, null, 2)}\n\nHistórico recente:\n${JSON.stringify(historico)}\n\nObservações do solicitante: ${data.extraNotes ?? "nenhuma"}${methodology}`;
+    // Memória de edição: compara propostas anteriores da IA com a versão aprovada pelo treinador
+    let memory = "";
+    const { data: past } = await supabase.from("workout_versions").select("id, ai_original_plan").not("ai_original_plan", "is", null).not("published_at", "is", null).order("published_at", { ascending: false }).limit(5);
+    if (past?.length) {
+      const { data: finals } = await supabase.from("workout_exercises").select("version_id, name, sets, reps, rest_seconds").in("version_id", past.map((p) => p.id));
+      const lines: string[] = [];
+      for (const p of past) {
+        const orig = ((p.ai_original_plan as { sessions?: { exercises?: { name: string; sets: number; reps: string; rest_seconds: number }[] }[] } | null)?.sessions ?? []).flatMap((s) => s.exercises ?? []);
+        const fin = (finals ?? []).filter((e) => e.version_id === p.id);
+        const key = (n: string) => n.trim().toLowerCase();
+        const finMap = new Map(fin.map((e) => [key(e.name), e]));
+        const origMap = new Map(orig.map((e) => [key(e.name), e]));
+        for (const o of orig) {
+          const f = finMap.get(key(o.name));
+          if (!f) lines.push(`removeu "${o.name}"`);
+          else if (f.sets !== o.sets || f.reps !== o.reps || f.rest_seconds !== o.rest_seconds) lines.push(`ajustou "${o.name}": ${o.sets}x${o.reps} ${o.rest_seconds}s -> ${f.sets}x${f.reps} ${f.rest_seconds}s`);
+        }
+        for (const f of fin) if (!origMap.has(key(f.name))) lines.push(`adicionou "${f.name}" (${f.sets}x${f.reps})`);
+      }
+      if (lines.length) memory = `\n\nMEMÓRIA DE EDIÇÃO (alterações que o treinador fez em propostas anteriores antes de aprovar; trate como preferências dele):\n- ${lines.slice(0, 60).join("\n- ")}`;
+    }
+    const prompt = `Ficha do aluno:\n${JSON.stringify(ficha, null, 2)}\n\nHistórico recente:\n${JSON.stringify(historico)}\n\nObservações do solicitante: ${data.extraNotes ?? "nenhuma"}${methodology}${memory}`;
 
     let plan: z.infer<typeof planSchema>;
     try {
@@ -143,6 +164,7 @@ Regras:
     plan.requires_clearance ||= !!(a.injuries || a.current_pain || a.medical_restrictions || a.movement_limitations);
     const saved=await supabase.rpc('save_ai_workout',{_student_id:data.studentId,_plan:plan,_model:MODEL});
     if(saved.error)throw new Error(saved.error.message);
+    await supabase.from("workout_versions").update({ ai_original_plan: plan as never }).eq("id", saved.data as string);
     return {versionId:saved.data};
   });
 
