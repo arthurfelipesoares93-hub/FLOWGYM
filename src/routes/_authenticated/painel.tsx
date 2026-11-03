@@ -14,12 +14,10 @@ export const Route = createFileRoute("/_authenticated/painel")({
     ],
   }),
   beforeLoad: async () => {
-    const { data: u } = await supabase.auth.getUser();
-    if (!u.user) throw redirect({ to: "/auth" });
-    const { data, error } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", u.user.id);
+    const { data: s } = await supabase.auth.getSession();
+    const userId = s.session?.user.id;
+    if (!userId) throw redirect({ to: "/auth" });
+    const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId);
     if (error) throw new Error(error.message);
     const isAdmin = (data ?? []).some((r) => r.role === "admin");
     throw redirect({ to: isAdmin ? "/admin" : "/aluno" });

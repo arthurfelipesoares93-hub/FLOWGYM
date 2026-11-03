@@ -13,16 +13,17 @@ export function useMe() {
   return useQuery({
     queryKey: ["me"],
     queryFn: async (): Promise<Me | null> => {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) return null;
+      const { data: s } = await supabase.auth.getSession();
+      const user = s.session?.user;
+      if (!user) return null;
       const [{ data: roles }, { data: profile }] = await Promise.all([
-        supabase.from("user_roles").select("role").eq("user_id", u.user.id),
-        supabase.from("profiles").select("full_name").eq("id", u.user.id).maybeSingle(),
+        supabase.from("user_roles").select("role").eq("user_id", user.id),
+        supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
       ]);
       const isAdmin = (roles ?? []).some((r) => r.role === "admin");
       return {
-        userId: u.user.id,
-        email: u.user.email ?? null,
+        userId: user.id,
+        email: user.email ?? null,
         fullName: profile?.full_name ?? "",
         role: isAdmin ? "admin" : "student",
       };
