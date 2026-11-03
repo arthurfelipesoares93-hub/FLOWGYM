@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Field } from "@/components/app/ui-bits";
 import { errMsg } from "@/lib/format";
 
-export const Route = createFileRoute("/reset-password")({ staticData: { sitemap: false },
+export const Route = createFileRoute("/reset-password")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { name: "robots", content: "noindex" },
@@ -15,7 +16,8 @@ export const Route = createFileRoute("/reset-password")({ staticData: { sitemap:
       { name: "description", content: "Defina uma nova senha para sua conta." },
       { property: "og:title", content: "Redefinir senha — Team Oliveira" },
       { property: "og:description", content: "Defina uma nova senha para sua conta." },
-      {property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"},
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Reset,
@@ -42,8 +44,12 @@ function Reset() {
         }}
       >
         <h1 className="text-3xl font-bold uppercase">Nova senha</h1>
-        <Field label="Nova senha"><Input type="password" value={pw} onChange={(e) => setPw(e.target.value)} required /></Field>
-        <Button className="w-full" disabled={busy}>{busy ? "Salvando..." : "Salvar senha"}</Button>
+        <Field label="Nova senha">
+          <Input type="password" value={pw} onChange={(e) => setPw(e.target.value)} required />
+        </Field>
+        <Button className="w-full" disabled={busy}>
+          {busy ? "Salvando..." : "Salvar senha"}
+        </Button>
       </form>
     </div>
   );

@@ -6,15 +6,29 @@ export const themeInitScript = `(function(){try{var t=localStorage.getItem('them
 
 export function ThemeToggle({ className }: { className?: string }) {
   const [dark, setDark] = useState(false);
-  useEffect(() => { setDark(document.documentElement.classList.contains("dark")); }, []);
+  useEffect(() => {
+    setDark(document.documentElement.classList.contains("dark"));
+  }, []);
   const toggle = () => {
     const next = !dark;
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
-    try { localStorage.setItem("theme", next ? "dark" : "light"); } catch { /* ignore */ }
+    try {
+      localStorage.setItem("theme", next ? "dark" : "light");
+    } catch {
+      /* ignore */
+    }
   };
   return (
-    <Button type="button" variant="ghost" size="icon" className={className} onClick={toggle} aria-label={dark ? "Ativar modo claro" : "Ativar modo escuro"} title={dark ? "Modo claro" : "Modo escuro"}>
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      className={className}
+      onClick={toggle}
+      aria-label={dark ? "Ativar modo claro" : "Ativar modo escuro"}
+      title={dark ? "Modo claro" : "Modo escuro"}
+    >
       {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </Button>
   );

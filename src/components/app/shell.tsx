@@ -5,38 +5,77 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, useSignOut } from "@/lib/auth";
 import { cn } from "@/lib/utils";
-import {usePublicBrand} from '@/lib/public-brand';
-import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/app/theme-toggle';
+import { usePublicBrand } from "@/lib/public-brand";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/app/theme-toggle";
 
-export type NavItem = { to: string; label: string; icon: ComponentType<{ className?: string }>; exact?: boolean };
+export type NavItem = {
+  to: string;
+  label: string;
+  icon: ComponentType<{ className?: string }>;
+  exact?: boolean;
+};
 
 export function useUnreadCount() {
   return useQuery({
     queryKey: ["notifications", "unread"],
     queryFn: async () => {
-      const { count } = await supabase.from("notifications").select("id", { count: "exact", head: true }).is("read_at", null);
+      const { count } = await supabase
+        .from("notifications")
+        .select("id", { count: "exact", head: true })
+        .is("read_at", null);
       return count ?? 0;
     },
     refetchInterval: 30_000,
   });
 }
 
-export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; notificationsTo: string; roleLabel: string }) {
-  const {data:brand}=usePublicBrand();
+export function Shell({
+  nav,
+  notificationsTo,
+  roleLabel,
+}: {
+  nav: NavItem[];
+  notificationsTo: string;
+  roleLabel: string;
+}) {
+  const { data: brand } = usePublicBrand();
   const [open, setOpen] = useState(false);
   const { data: me } = useMe();
   const signOut = useSignOut();
   const { data: unread } = useUnreadCount();
 
-  useEffect(()=>{if(!open)return;const close=(e:KeyboardEvent)=>{if(e.key==='Escape')setOpen(false)};document.addEventListener('keydown',close);document.body.style.overflow='hidden';return()=>{document.removeEventListener('keydown',close);document.body.style.overflow='';};},[open]);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", close);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", close);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
   const sidebar = (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
       <div className="flex items-center justify-between px-5 py-5">
-        <span className="font-display text-2xl font-bold uppercase tracking-wider text-sidebar-accent-foreground">{brand?.brand||'Team Oliveira'}</span>
-        <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(false)} aria-label="Fechar menu"><X className="h-5 w-5" /></Button>
+        <span className="font-display text-2xl font-bold uppercase tracking-wider text-sidebar-accent-foreground">
+          {brand?.brand || "Team Oliveira"}
+        </span>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="lg:hidden"
+          onClick={() => setOpen(false)}
+          aria-label="Fechar menu"
+        >
+          <X className="h-5 w-5" />
+        </Button>
       </div>
-      <p className="px-5 pb-2 text-[11px] font-semibold uppercase tracking-widest text-sidebar-foreground/50">{roleLabel}</p>
+      <p className="px-5 pb-2 text-[11px] font-semibold uppercase tracking-widest text-sidebar-foreground/50">
+        {roleLabel}
+      </p>
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3">
         {nav.map((n) => (
           <Link
@@ -45,7 +84,10 @@ export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; not
             activeOptions={{ exact: !!n.exact }}
             onClick={() => setOpen(false)}
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            activeProps={{ className: "bg-sidebar-primary !text-sidebar-primary-foreground hover:!bg-sidebar-primary" }}
+            activeProps={{
+              className:
+                "bg-sidebar-primary !text-sidebar-primary-foreground hover:!bg-sidebar-primary",
+            }}
           >
             <n.icon className="h-4 w-4" />
             {n.label}
@@ -53,9 +95,15 @@ export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; not
         ))}
       </nav>
       <div className="border-t border-sidebar-border p-4">
-        <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">{me?.fullName || me?.email}</p>
+        <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">
+          {me?.fullName || me?.email}
+        </p>
         <p className="truncate text-xs text-sidebar-foreground/60">{me?.email}</p>
-        <Button variant="ghost" onClick={signOut} className="mt-3 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-accent-foreground">
+        <Button
+          variant="ghost"
+          onClick={signOut}
+          className="mt-3 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-accent-foreground"
+        >
           <LogOut className="h-4 w-4" /> Sair
         </Button>
       </div>
@@ -63,27 +111,54 @@ export function Shell({ nav, notificationsTo, roleLabel }: { nav: NavItem[]; not
   );
 
   return (
-    <div className="flex min-h-screen" data-blue-theme={brand?.theme??'classico'}>
+    <div className="flex min-h-screen" data-blue-theme={brand?.theme ?? "classico"}>
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 lg:block">{sidebar}</aside>
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-foreground/50" onClick={() => setOpen(false)} />
-          <div role="dialog" aria-modal="true" aria-label="Menu de navegação" className="absolute inset-y-0 left-0 w-72 max-w-[90vw]">{sidebar}</div>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu de navegação"
+            className="absolute inset-y-0 left-0 w-72 max-w-[90vw]"
+          >
+            {sidebar}
+          </div>
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex items-center justify-between border-b bg-background/90 px-4 py-3 backdrop-blur lg:px-8">
-          <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)} aria-label="Abrir menu"><Menu className="h-5 w-5" /></Button>
-          <div className="lg:hidden font-display text-xl font-bold uppercase">{brand?.brand||'Team Oliveira'}</div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={() => setOpen(true)}
+            aria-label="Abrir menu"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+          <div className="lg:hidden font-display text-xl font-bold uppercase">
+            {brand?.brand || "Team Oliveira"}
+          </div>
           <div className="hidden lg:block" />
           <div className="flex items-center gap-1">
-          <ThemeToggle />
-          <Link to={notificationsTo} className="relative rounded-full p-2 hover:bg-muted" aria-label="Notificações">
-            <Bell className="h-5 w-5" />
-            {!!unread && (
-              <span className={cn("absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground")}>{unread > 99 ? "99+" : unread}</span>
-            )}
-          </Link>
+            <ThemeToggle />
+            <Link
+              to={notificationsTo}
+              className="relative rounded-full p-2 hover:bg-muted"
+              aria-label="Notificações"
+            >
+              <Bell className="h-5 w-5" />
+              {!!unread && (
+                <span
+                  className={cn(
+                    "absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground",
+                  )}
+                >
+                  {unread > 99 ? "99+" : unread}
+                </span>
+              )}
+            </Link>
           </div>
         </header>
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 lg:px-8">

@@ -1,9 +1,115 @@
-import {createFileRoute,Link} from '@tanstack/react-router';
-import {ArrowUpRight,Dumbbell,HeartPulse,Activity,TrendingUp,CalendarCheck} from 'lucide-react';
-import photo from '@/assets/william-oliveira.asset.json';
-import {Button} from '@/components/ui/button';
-import {PublicNav} from '@/components/app/public-nav';
-import {usePublicBrand} from '@/lib/public-brand';
-import {pageHead} from '@/lib/seo';
-export const Route=createFileRoute('/')({ staticData: { sitemap: true },head:()=>pageHead('Team Oliveira | William Oliveira','Treinamento personalizado, acompanhamento e evolução com William Oliveira. Sua evolução começa com uma decisão.'),component:Index});
-function Index(){const {data:brand}=usePublicBrand();return <div className="bg-background"><section className="william-hero relative overflow-hidden bg-sidebar text-primary-foreground"><img src={brand?.photo||`${photo.url}?v=2`} alt="William Oliveira no ambiente de treinamento" className="william-photo absolute inset-0 h-full w-full object-cover"/><div className="william-shade absolute inset-0"/><PublicNav/><div className="relative mx-auto flex max-w-6xl items-end px-5 pb-9 pt-56 sm:min-h-[500px] sm:items-center sm:py-12"><div className="enter-soft max-w-xl"><p className="mb-3 text-xs font-semibold uppercase text-accent">William Oliveira · Personal trainer</p><h1 className="text-4xl font-bold uppercase leading-none sm:text-6xl">{brand?.brand||'Team Oliveira'}</h1><h2 className="mt-4 max-w-lg text-3xl font-semibold uppercase leading-tight sm:text-4xl">Sua evolução começa com uma decisão.</h2><p className="mt-4 max-w-lg text-sm text-primary-foreground/85 sm:text-base">Treinamento personalizado, acompanhamento de evolução e uma estratégia pensada para ajudar você a chegar mais perto dos seus objetivos.</p><div className="mt-6 flex flex-wrap gap-3"><Button asChild><Link to="/contato">Quero começar minha jornada<ArrowUpRight className="h-4 w-4"/></Link></Button><Button asChild variant="secondary"><Link to="/william">Conheça meu trabalho</Link></Button></div></div></div></section><section className="mx-auto max-w-6xl px-5 py-10"><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-semibold uppercase text-primary">Planejamento. Dedicação. Consistência.</p><h2 className="mt-2 text-3xl font-bold uppercase">Seu objetivo é o ponto de partida.</h2></div><Button asChild variant="link"><Link to="/como-funciona">Como funciona<ArrowUpRight className="h-4 w-4"/></Link></Button></div><div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">{[{icon:Dumbbell,label:'Ganho de massa muscular'},{icon:HeartPulse,label:'Emagrecimento'},{icon:Activity,label:'Condicionamento físico'},{icon:TrendingUp,label:'Desenvolvimento de força'},{icon:CalendarCheck,label:'Rotina de treinamento'}].map(x=><div key={x.label} className="rounded-lg border bg-card p-5"><x.icon className="h-7 w-7 text-primary"/><h3 className="mt-5 text-xl font-semibold uppercase">{x.label}</h3></div>)}</div></section><section className="bg-secondary"><div className="mx-auto flex max-w-6xl flex-col justify-between gap-5 px-5 py-10 sm:flex-row sm:items-center"><h2 className="max-w-xl text-3xl font-bold uppercase">O próximo passo da sua evolução pode começar hoje.</h2><Button asChild><Link to="/contato">Quero conhecer o Team Oliveira<ArrowUpRight className="h-4 w-4"/></Link></Button></div></section><footer className="border-t px-5 py-6 text-center text-xs text-muted-foreground">Team Oliveira · William Oliveira · Dados e fotografias tratados com privacidade.</footer></div>}
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  ArrowUpRight,
+  Dumbbell,
+  HeartPulse,
+  Activity,
+  TrendingUp,
+  CalendarCheck,
+} from "lucide-react";
+import photo from "@/assets/william-oliveira.asset.json";
+import { Button } from "@/components/ui/button";
+import { PublicNav } from "@/components/app/public-nav";
+import { usePublicBrand } from "@/lib/public-brand";
+import { pageHead } from "@/lib/seo";
+export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
+  head: () =>
+    pageHead(
+      "Team Oliveira | William Oliveira",
+      "Treinamento personalizado, acompanhamento e evolução com William Oliveira. Sua evolução começa com uma decisão.",
+    ),
+  component: Index,
+});
+function Index() {
+  const { data: brand } = usePublicBrand();
+  return (
+    <div className="bg-background">
+      <section className="william-hero relative overflow-hidden bg-sidebar text-primary-foreground">
+        <img
+          src={brand?.photo || `${photo.url}?v=2`}
+          alt="William Oliveira no ambiente de treinamento"
+          className="william-photo absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="william-shade absolute inset-0" />
+        <PublicNav />
+        <div className="relative mx-auto flex max-w-6xl items-end px-5 pb-9 pt-56 sm:min-h-[500px] sm:items-center sm:py-12">
+          <div className="enter-soft max-w-xl">
+            <p className="mb-3 text-xs font-semibold uppercase text-accent">
+              William Oliveira · Personal trainer
+            </p>
+            <h1 className="text-4xl font-bold uppercase leading-none sm:text-6xl">
+              {brand?.brand || "Team Oliveira"}
+            </h1>
+            <h2 className="mt-4 max-w-lg text-3xl font-semibold uppercase leading-tight sm:text-4xl">
+              Sua evolução começa com uma decisão.
+            </h2>
+            <p className="mt-4 max-w-lg text-sm text-primary-foreground/85 sm:text-base">
+              Treinamento personalizado, acompanhamento de evolução e uma estratégia pensada para
+              ajudar você a chegar mais perto dos seus objetivos.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild>
+                <Link to="/contato">
+                  Quero começar minha jornada
+                  <ArrowUpRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button asChild variant="secondary">
+                <Link to="/william">Conheça meu trabalho</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="mx-auto max-w-6xl px-5 py-10">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase text-primary">
+              Planejamento. Dedicação. Consistência.
+            </p>
+            <h2 className="mt-2 text-3xl font-bold uppercase">
+              Seu objetivo é o ponto de partida.
+            </h2>
+          </div>
+          <Button asChild variant="link">
+            <Link to="/como-funciona">
+              Como funciona
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+        <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {[
+            { icon: Dumbbell, label: "Ganho de massa muscular" },
+            { icon: HeartPulse, label: "Emagrecimento" },
+            { icon: Activity, label: "Condicionamento físico" },
+            { icon: TrendingUp, label: "Desenvolvimento de força" },
+            { icon: CalendarCheck, label: "Rotina de treinamento" },
+          ].map((x) => (
+            <div key={x.label} className="rounded-lg border bg-card p-5">
+              <x.icon className="h-7 w-7 text-primary" />
+              <h3 className="mt-5 text-xl font-semibold uppercase">{x.label}</h3>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="bg-secondary">
+        <div className="mx-auto flex max-w-6xl flex-col justify-between gap-5 px-5 py-10 sm:flex-row sm:items-center">
+          <h2 className="max-w-xl text-3xl font-bold uppercase">
+            O próximo passo da sua evolução pode começar hoje.
+          </h2>
+          <Button asChild>
+            <Link to="/contato">
+              Quero conhecer o Team Oliveira
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+      <footer className="border-t px-5 py-6 text-center text-xs text-muted-foreground">
+        Team Oliveira · William Oliveira · Dados e fotografias tratados com privacidade.
+      </footer>
+    </div>
+  );
+}

@@ -35,23 +35,43 @@ const planSchema = z.object({
 export const generateWorkout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { studentId: string; extraNotes?: string }) =>
-    z.object({ studentId: z.string().uuid(), extraNotes: z.string().max(2000).optional() }).parse(input),
+    z
+      .object({ studentId: z.string().uuid(), extraNotes: z.string().max(2000).optional() })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     // Authorization through RLS-aware RPC (never trust browser ids)
-    const { data: allowed, error: authorizationError } = await supabase.rpc("is_trainer_of", { _student_id: data.studentId });
-    if (authorizationError) throw new Error('Não foi possível verificar a autorização.');
+    const { data: allowed, error: authorizationError } = await supabase.rpc("is_trainer_of", {
+      _student_id: data.studentId,
+    });
+    if (authorizationError) throw new Error("Não foi possível verificar a autorização.");
     if (!allowed) throw new Error("Acesso negado.");
 
-    const consent = await supabase.from('students').select('data_consent_at').eq('id', data.studentId).single();
-    if (consent.error || !consent.data.data_consent_at) throw new Error('O aluno precisa autorizar o uso dos dados para o acompanhamento.');
+    const consent = await supabase
+      .from("students")
+      .select("data_consent_at")
+      .eq("id", data.studentId)
+      .single();
+    if (consent.error || !consent.data.data_consent_at)
+      throw new Error("O aluno precisa autorizar o uso dos dados para o acompanhamento.");
 
-    const { data: assessment } = await supabase.from("assessments").select("*").eq("student_id", data.studentId).maybeSingle();
-    if (!assessment?.submitted_at) throw new Error("A ficha de avaliação precisa ser enviada antes de gerar um treino.");
+    const { data: assessment } = await supabase
+      .from("assessments")
+      .select("*")
+      .eq("student_id", data.studentId)
+      .maybeSingle();
+    if (!assessment?.submitted_at)
+      throw new Error("A ficha de avaliação precisa ser enviada antes de gerar um treino.");
 
-    const { data: pending } = await supabase.from("workout_versions").select("id").eq("student_id", data.studentId).in("status", ["pendente"]).limit(1);
-    if (pending && pending.length) throw new Error("Já existe um treino pendente de revisão para este aluno.");
+    const { data: pending } = await supabase
+      .from("workout_versions")
+      .select("id")
+      .eq("student_id", data.studentId)
+      .in("status", ["pendente"])
+      .limit(1);
+    if (pending && pending.length)
+      throw new Error("Já existe um treino pendente de revisão para este aluno.");
 
     // Recent performance as context (reference only; never auto-publishes)
     const { data: logs } = await supabase
@@ -77,10 +97,22 @@ export const generateWorkout = createServerFn({ method: "POST" })
         const res = await fetch(input, { ...init, headers });
         runId ??= res.headers.get("X-Lovable-AIG-Run-ID") ?? undefined;
         if (!res.ok) {
-          const body = await res.clone().text().catch(() => "");
-          if (res.status === 402) throw new Error("Créditos de IA esgotados. Adicione créditos ao workspace para continuar.");
-          if (res.status === 429) throw new Error("Limite de requisições de IA atingido. Tente novamente em alguns minutos.");
-          if (res.status === 403) throw new Error("O uso de IA está bloqueado para este workspace. " + body.slice(0, 200));
+          const body = await res
+            .clone()
+            .text()
+            .catch(() => "");
+          if (res.status === 402)
+            throw new Error(
+              "Créditos de IA esgotados. Adicione créditos ao workspace para continuar.",
+            );
+          if (res.status === 429)
+            throw new Error(
+              "Limite de requisições de IA atingido. Tente novamente em alguns minutos.",
+            );
+          if (res.status === 403)
+            throw new Error(
+              "O uso de IA está bloqueado para este workspace. " + body.slice(0, 200),
+            );
         }
         return res;
       },
@@ -88,13 +120,26 @@ export const generateWorkout = createServerFn({ method: "POST" })
 
     const a = assessment;
     const ficha = {
-      idade_nascimento: a.birth_date, altura_cm: a.height_cm, peso_kg: a.weight_kg,
-      objetivos: a.goals, outro_objetivo: a.goal_other, nivel: a.experience_level, tempo_experiencia: a.experience_time,
-      dias_por_semana: a.days_per_week, minutos_por_sessao: a.session_minutes, dias_disponiveis: a.available_days,
-      local: a.training_location, equipamentos: a.equipment,
-      lesoes: a.injuries, dores_atuais: a.current_pain, limitacoes: a.movement_limitations,
-      restricoes_medicas: a.medical_restrictions, observacoes: a.other_notes,
-      outras_atividades: a.other_activities, frequencia_atividades: a.activities_frequency, duracao_atividades: a.activities_duration,
+      idade_nascimento: a.birth_date,
+      altura_cm: a.height_cm,
+      peso_kg: a.weight_kg,
+      objetivos: a.goals,
+      outro_objetivo: a.goal_other,
+      nivel: a.experience_level,
+      tempo_experiencia: a.experience_time,
+      dias_por_semana: a.days_per_week,
+      minutos_por_sessao: a.session_minutes,
+      dias_disponiveis: a.available_days,
+      local: a.training_location,
+      equipamentos: a.equipment,
+      lesoes: a.injuries,
+      dores_atuais: a.current_pain,
+      limitacoes: a.movement_limitations,
+      restricoes_medicas: a.medical_restrictions,
+      observacoes: a.other_notes,
+      outras_atividades: a.other_activities,
+      frequencia_atividades: a.activities_frequency,
+      duracao_atividades: a.activities_duration,
     };
     const historico = (logs ?? []).map((l) => ({
       data: l.performed_on,
@@ -115,17 +160,43 @@ Regras:
 - progression: progressão planejada para as próximas 4 a 8 semanas.
 - Use o histórico de desempenho apenas como referência de cargas e aderência.`;
 
-    const { data: settings } = await supabase.from("trainer_settings").select("methodology_guide").eq("trainer_id", userId).maybeSingle();
+    const { data: settings } = await supabase
+      .from("trainer_settings")
+      .select("methodology_guide")
+      .eq("trainer_id", userId)
+      .maybeSingle();
     const guide = settings?.methodology_guide?.trim();
-    const methodology = guide ? `\n\nMETODOLOGIA DO TREINADOR (siga estas preferências como prioridade, desde que respeitem as regras de segurança acima):\n${guide.slice(0, 10000)}` : "";
+    const methodology = guide
+      ? `\n\nMETODOLOGIA DO TREINADOR (siga estas preferências como prioridade, desde que respeitem as regras de segurança acima):\n${guide.slice(0, 10000)}`
+      : "";
     // Memória de edição: compara propostas anteriores da IA com a versão aprovada pelo treinador
     let memory = "";
-    const { data: past } = await supabase.from("workout_versions").select("id, ai_original_plan").not("ai_original_plan", "is", null).not("published_at", "is", null).order("published_at", { ascending: false }).limit(5);
+    const { data: past } = await supabase
+      .from("workout_versions")
+      .select("id, ai_original_plan")
+      .not("ai_original_plan", "is", null)
+      .not("published_at", "is", null)
+      .order("published_at", { ascending: false })
+      .limit(5);
     if (past?.length) {
-      const { data: finals } = await supabase.from("workout_exercises").select("version_id, name, sets, reps, rest_seconds").in("version_id", past.map((p) => p.id));
+      const { data: finals } = await supabase
+        .from("workout_exercises")
+        .select("version_id, name, sets, reps, rest_seconds")
+        .in(
+          "version_id",
+          past.map((p) => p.id),
+        );
       const lines: string[] = [];
       for (const p of past) {
-        const orig = ((p.ai_original_plan as { sessions?: { exercises?: { name: string; sets: number; reps: string; rest_seconds: number }[] }[] } | null)?.sessions ?? []).flatMap((s) => s.exercises ?? []);
+        const orig = (
+          (
+            p.ai_original_plan as {
+              sessions?: {
+                exercises?: { name: string; sets: number; reps: string; rest_seconds: number }[];
+              }[];
+            } | null
+          )?.sessions ?? []
+        ).flatMap((s) => s.exercises ?? []);
         const fin = (finals ?? []).filter((e) => e.version_id === p.id);
         const key = (n: string) => n.trim().toLowerCase();
         const finMap = new Map(fin.map((e) => [key(e.name), e]));
@@ -133,11 +204,16 @@ Regras:
         for (const o of orig) {
           const f = finMap.get(key(o.name));
           if (!f) lines.push(`removeu "${o.name}"`);
-          else if (f.sets !== o.sets || f.reps !== o.reps || f.rest_seconds !== o.rest_seconds) lines.push(`ajustou "${o.name}": ${o.sets}x${o.reps} ${o.rest_seconds}s -> ${f.sets}x${f.reps} ${f.rest_seconds}s`);
+          else if (f.sets !== o.sets || f.reps !== o.reps || f.rest_seconds !== o.rest_seconds)
+            lines.push(
+              `ajustou "${o.name}": ${o.sets}x${o.reps} ${o.rest_seconds}s -> ${f.sets}x${f.reps} ${f.rest_seconds}s`,
+            );
         }
-        for (const f of fin) if (!origMap.has(key(f.name))) lines.push(`adicionou "${f.name}" (${f.sets}x${f.reps})`);
+        for (const f of fin)
+          if (!origMap.has(key(f.name))) lines.push(`adicionou "${f.name}" (${f.sets}x${f.reps})`);
       }
-      if (lines.length) memory = `\n\nMEMÓRIA DE EDIÇÃO (alterações que o treinador fez em propostas anteriores antes de aprovar; trate como preferências dele):\n- ${lines.slice(0, 60).join("\n- ")}`;
+      if (lines.length)
+        memory = `\n\nMEMÓRIA DE EDIÇÃO (alterações que o treinador fez em propostas anteriores antes de aprovar; trate como preferências dele):\n- ${lines.slice(0, 60).join("\n- ")}`;
     }
     const prompt = `Ficha do aluno:\n${JSON.stringify(ficha, null, 2)}\n\nHistórico recente:\n${JSON.stringify(historico)}\n\nObservações do solicitante: ${data.extraNotes ?? "nenhuma"}${methodology}${memory}`;
 
@@ -149,23 +225,43 @@ Regras:
         prompt,
         output: Output.object({ schema: planSchema }),
         providerOptions: {
-          openai: { store: false, forceReasoning: true, reasoningEffort: "low", reasoningSummary: "auto", include: ["reasoning.encrypted_content"] },
+          openai: {
+            store: false,
+            forceReasoning: true,
+            reasoningEffort: "low",
+            reasoningSummary: "auto",
+            include: ["reasoning.encrypted_content"],
+          },
         },
       });
       plan = (await result.output) as z.infer<typeof planSchema>;
     } catch (e) {
-      if (NoObjectGeneratedError.isInstance(e)) throw new Error("A IA não retornou um treino válido. Tente novamente.");
+      if (NoObjectGeneratedError.isInstance(e))
+        throw new Error("A IA não retornou um treino válido. Tente novamente.");
       throw e instanceof Error ? e : new Error("Falha ao gerar treino com IA.");
     }
     if (!plan?.sessions?.length) throw new Error("A IA não retornou sessões de treino.");
 
     plan = planSchema.parse(plan);
-    if(plan.sessions.length !== assessment.days_per_week) throw new Error('A proposta não corresponde à disponibilidade semanal. Gere novamente.');
-    plan.requires_clearance ||= !!(a.injuries || a.current_pain || a.medical_restrictions || a.movement_limitations);
-    const saved=await supabase.rpc('save_ai_workout',{_student_id:data.studentId,_plan:plan,_model:MODEL});
-    if(saved.error)throw new Error(saved.error.message);
-    await supabase.from("workout_versions").update({ ai_original_plan: plan as never }).eq("id", saved.data as string);
-    return {versionId:saved.data};
+    if (plan.sessions.length !== assessment.days_per_week)
+      throw new Error("A proposta não corresponde à disponibilidade semanal. Gere novamente.");
+    plan.requires_clearance ||= !!(
+      a.injuries ||
+      a.current_pain ||
+      a.medical_restrictions ||
+      a.movement_limitations
+    );
+    const saved = await supabase.rpc("save_ai_workout", {
+      _student_id: data.studentId,
+      _plan: plan,
+      _model: MODEL,
+    });
+    if (saved.error) throw new Error(saved.error.message);
+    await supabase
+      .from("workout_versions")
+      .update({ ai_original_plan: plan as never })
+      .eq("id", saved.data as string);
+    return { versionId: saved.data };
   });
 
 export const deleteMyAccount = createServerFn({ method: "POST" })
@@ -173,17 +269,34 @@ export const deleteMyAccount = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
     const studentResult = await supabase.rpc("my_student_id");
-    if(studentResult.error)throw new Error(studentResult.error.message);
-    const sid=studentResult.data;
+    if (studentResult.error) throw new Error(studentResult.error.message);
+    const sid = studentResult.data;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (sid) {
       for (const bucket of ["body-photos", "receipts"]) {
-        let offset=0;const paths:string[]=[];
-        while(true){const result=await supabaseAdmin.storage.from(bucket).list(sid,{limit:1000,offset});if(result.error)throw new Error('Não foi possível conferir todos os arquivos. A exclusão foi interrompida.');const files=result.data??[];paths.push(...files.map(f=>`${sid}/${f.name}`));if(files.length<1000)break;offset+=1000;}
-        for(let i=0;i<paths.length;i+=100){const removed=await supabaseAdmin.storage.from(bucket).remove(paths.slice(i,i+100));if(removed.error)throw new Error('Não foi possível excluir todos os arquivos. Tente novamente.');}
+        let offset = 0;
+        const paths: string[] = [];
+        while (true) {
+          const result = await supabaseAdmin.storage
+            .from(bucket)
+            .list(sid, { limit: 1000, offset });
+          if (result.error)
+            throw new Error(
+              "Não foi possível conferir todos os arquivos. A exclusão foi interrompida.",
+            );
+          const files = result.data ?? [];
+          paths.push(...files.map((f) => `${sid}/${f.name}`));
+          if (files.length < 1000) break;
+          offset += 1000;
+        }
+        for (let i = 0; i < paths.length; i += 100) {
+          const removed = await supabaseAdmin.storage.from(bucket).remove(paths.slice(i, i + 100));
+          if (removed.error)
+            throw new Error("Não foi possível excluir todos os arquivos. Tente novamente.");
+        }
       }
-      const removed=await supabaseAdmin.from("students").delete().eq("id",sid);
-      if(removed.error)throw new Error('Não foi possível excluir os dados da conta.');
+      const removed = await supabaseAdmin.from("students").delete().eq("id", sid);
+      if (removed.error) throw new Error("Não foi possível excluir os dados da conta.");
     }
     const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
     if (error) throw error;

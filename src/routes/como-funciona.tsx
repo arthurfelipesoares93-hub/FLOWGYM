@@ -1,6 +1,50 @@
-import {createFileRoute,Link} from '@tanstack/react-router';
-import {PublicNav} from '@/components/app/public-nav';
-import {Button} from '@/components/ui/button';
-import {pageHead} from '@/lib/seo';
-export const Route=createFileRoute('/como-funciona')({ staticData: { sitemap: true },head:()=>pageHead('Como funciona','Conheça seus objetivos, receba seu planejamento e acompanhe sua evolução com o Team Oliveira.'),component:Page});
-function Page(){return <><header className="bg-sidebar text-primary-foreground"><PublicNav/></header><main className="mx-auto max-w-5xl px-5 py-12"><h1 className="text-4xl font-bold uppercase">Como funciona</h1><div className="mt-8 grid gap-8 md:grid-cols-3">{[['Conheça seus objetivos','O aluno informa suas características, suas necessidades, sua rotina e o que deseja alcançar.'],['Receba seu planejamento','O personal analisa as informações e prepara um treino adequado ao aluno, com auxílio de ferramentas de inteligência artificial quando aplicável.'],['Acompanhe sua evolução','O aluno registra seus treinos, acompanha seu progresso e mantém contato com o personal.']].map(([t,d],i)=><section key={t} className="border-t-2 border-primary pt-5"><span className="font-display text-4xl font-bold text-primary">0{i+1}</span><h2 className="mt-4 text-2xl font-semibold uppercase">{t}</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{d}</p></section>)}</div><Button asChild className="mt-10"><Link to="/contato">Quero conhecer o Team Oliveira</Link></Button></main></>}
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { PublicNav } from "@/components/app/public-nav";
+import { Button } from "@/components/ui/button";
+import { pageHead } from "@/lib/seo";
+export const Route = createFileRoute("/como-funciona")({
+  staticData: { sitemap: true },
+  head: () =>
+    pageHead(
+      "Como funciona",
+      "Conheça seus objetivos, receba seu planejamento e acompanhe sua evolução com o Team Oliveira.",
+    ),
+  component: Page,
+});
+function Page() {
+  return (
+    <>
+      <header className="bg-sidebar text-primary-foreground">
+        <PublicNav />
+      </header>
+      <main className="mx-auto max-w-5xl px-5 py-12">
+        <h1 className="text-4xl font-bold uppercase">Como funciona</h1>
+        <div className="mt-8 grid gap-8 md:grid-cols-3">
+          {[
+            [
+              "Conheça seus objetivos",
+              "O aluno informa suas características, suas necessidades, sua rotina e o que deseja alcançar.",
+            ],
+            [
+              "Receba seu planejamento",
+              "O personal analisa as informações e prepara um treino adequado ao aluno, com auxílio de ferramentas de inteligência artificial quando aplicável.",
+            ],
+            [
+              "Acompanhe sua evolução",
+              "O aluno registra seus treinos, acompanha seu progresso e mantém contato com o personal.",
+            ],
+          ].map(([t, d], i) => (
+            <section key={t} className="border-t-2 border-primary pt-5">
+              <span className="font-display text-4xl font-bold text-primary">0{i + 1}</span>
+              <h2 className="mt-4 text-2xl font-semibold uppercase">{t}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{d}</p>
+            </section>
+          ))}
+        </div>
+        <Button asChild className="mt-10">
+          <Link to="/contato">Quero conhecer o Team Oliveira</Link>
+        </Button>
+      </main>
+    </>
+  );
+}

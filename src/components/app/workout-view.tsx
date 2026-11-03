@@ -3,13 +3,22 @@ import { AlertTriangle, Play } from "lucide-react";
 import type { FullVersion } from "./workout-data";
 import { exerciseMedia } from "./exercise-media";
 
-export function WorkoutView({ v, actions }: { v: FullVersion; actions?: (sessionId: string) => React.ReactNode }) {
+export function WorkoutView({
+  v,
+  actions,
+}: {
+  v: FullVersion;
+  actions?: (sessionId: string) => React.ReactNode;
+}) {
   return (
     <div className="space-y-5">
       {v.requires_clearance && (
         <div className="flex gap-2 rounded-lg border border-warning/50 bg-warning/15 p-3 text-sm">
           <AlertTriangle className="h-4 w-4 shrink-0" />
-          <span>Há restrições de saúde informadas. Exercícios na região afetada dependem de avaliação profissional adequada.</span>
+          <span>
+            Há restrições de saúde informadas. Exercícios na região afetada dependem de avaliação
+            profissional adequada.
+          </span>
         </div>
       )}
       <div className="grid gap-3 sm:grid-cols-2">
@@ -24,26 +33,60 @@ export function WorkoutView({ v, actions }: { v: FullVersion; actions?: (session
           <div className="flex flex-col gap-2 bg-sidebar px-4 py-3 text-sidebar-accent-foreground sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="font-display text-xl font-bold uppercase">{s.name}</p>
-              <p className="text-xs text-sidebar-foreground">{[s.day_of_week, s.muscle_groups].filter(Boolean).join(" · ")}</p>
+              <p className="text-xs text-sidebar-foreground">
+                {[s.day_of_week, s.muscle_groups].filter(Boolean).join(" · ")}
+              </p>
             </div>
             {actions?.(s.id)}
           </div>
           <ol className="divide-y">
-            {s.exercises.map((e, i) => { const m = exerciseMedia(e.name, e.muscle_group); return (
-              <li key={e.id} className="flex flex-col gap-4 p-4 sm:flex-row">
-                {m && <ExerciseMedia m={m} name={e.name} />}
-                <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <p className="font-semibold">{i + 1}. {e.name} <span className="text-xs font-normal text-muted-foreground">{e.muscle_group}</span></p>
-                  <p className="text-sm font-semibold">{e.sets} × {e.reps} <span className="font-normal text-muted-foreground">· descanso {e.rest_seconds}s</span></p>
-                </div>
-                {e.instructions && <p className="mt-1 text-sm text-muted-foreground">{e.instructions}</p>}
-                {e.alternatives && <p className="mt-1 text-xs"><b>Alternativas:</b> {e.alternatives}</p>}
-                {e.video_url && <a href={e.video_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex text-sm font-semibold text-primary">Assistir demonstração ↗</a>}
-                {e.notes && <p className="mt-1 text-xs"><b>Obs.:</b> {e.notes}</p>}
-                </div>
-              </li>
-            ); })}
+            {s.exercises.map((e, i) => {
+              const m = exerciseMedia(e.name, e.muscle_group);
+              return (
+                <li key={e.id} className="flex flex-col gap-4 p-4 sm:flex-row">
+                  {m && <ExerciseMedia m={m} name={e.name} />}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <p className="font-semibold">
+                        {i + 1}. {e.name}{" "}
+                        <span className="text-xs font-normal text-muted-foreground">
+                          {e.muscle_group}
+                        </span>
+                      </p>
+                      <p className="text-sm font-semibold">
+                        {e.sets} × {e.reps}{" "}
+                        <span className="font-normal text-muted-foreground">
+                          · descanso {e.rest_seconds}s
+                        </span>
+                      </p>
+                    </div>
+                    {e.instructions && (
+                      <p className="mt-1 text-sm text-muted-foreground">{e.instructions}</p>
+                    )}
+                    {e.alternatives && (
+                      <p className="mt-1 text-xs">
+                        <b>Alternativas:</b> {e.alternatives}
+                      </p>
+                    )}
+                    {e.video_url && (
+                      <a
+                        href={e.video_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 inline-flex text-sm font-semibold text-primary"
+                      >
+                        Assistir demonstração ↗
+                      </a>
+                    )}
+                    {e.notes && (
+                      <p className="mt-1 text-xs">
+                        <b>Obs.:</b> {e.notes}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
           </ol>
           {s.notes && <p className="border-t px-4 py-2 text-xs text-muted-foreground">{s.notes}</p>}
         </div>
@@ -52,16 +95,44 @@ export function WorkoutView({ v, actions }: { v: FullVersion; actions?: (session
   );
 }
 
-function ExerciseMedia({ m, name }: { m: NonNullable<ReturnType<typeof exerciseMedia>>; name: string }) {
+function ExerciseMedia({
+  m,
+  name,
+}: {
+  m: NonNullable<ReturnType<typeof exerciseMedia>>;
+  name: string;
+}) {
   const [play, setPlay] = useState(false);
   return (
     <div className="relative w-full shrink-0 overflow-hidden rounded-lg bg-muted sm:w-40">
-      {play && m.video
-        ? <video src={m.video} poster={m.image} autoPlay loop muted playsInline className="aspect-square w-full object-cover" />
-        : <img src={m.image} alt={`Ilustração 3D: ${name}`} loading="lazy" width={816} height={816} className="aspect-square w-full object-cover" />}
+      {play && m.video ? (
+        <video
+          src={m.video}
+          poster={m.image}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="aspect-square w-full object-cover"
+        />
+      ) : (
+        <img
+          src={m.image}
+          alt={`Ilustração 3D: ${name}`}
+          loading="lazy"
+          width={816}
+          height={816}
+          className="aspect-square w-full object-cover"
+        />
+      )}
       {m.video && !play && (
-        <button type="button" onClick={() => setPlay(true)} className="absolute inset-x-2 bottom-2 inline-flex items-center justify-center gap-1 rounded-md bg-background/90 px-2 py-1 text-xs font-semibold text-foreground">
-          <Play className="h-3 w-3" />Ver movimento
+        <button
+          type="button"
+          onClick={() => setPlay(true)}
+          className="absolute inset-x-2 bottom-2 inline-flex items-center justify-center gap-1 rounded-md bg-background/90 px-2 py-1 text-xs font-semibold text-foreground"
+        >
+          <Play className="h-3 w-3" />
+          Ver movimento
         </button>
       )}
     </div>

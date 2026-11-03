@@ -13,7 +13,11 @@ export function dateBR(v: string | null | undefined) {
 
 export function dateTimeBR(v: string | null | undefined) {
   if (!v) return "—";
-  return new Date(v).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" });
+  return new Date(v).toLocaleString("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    dateStyle: "short",
+    timeStyle: "short",
+  });
 }
 
 export function todayISO() {
@@ -29,7 +33,10 @@ export function ageFrom(birth: string | null | undefined, today = todayISO()) {
   return age >= 0 ? age : null;
 }
 
-export const financialLabels: Record<string, { label: string; tone: "success" | "warning" | "destructive" | "muted" | "info" }> = {
+export const financialLabels: Record<
+  string,
+  { label: string; tone: "success" | "warning" | "destructive" | "muted" | "info" }
+> = {
   em_dia: { label: "Em dia", tone: "success" },
   proximo: { label: "Próximo do vencimento", tone: "warning" },
   pendente: { label: "Pendente", tone: "info" },
@@ -38,7 +45,10 @@ export const financialLabels: Record<string, { label: string; tone: "success" | 
   inativo: { label: "Plano inativo", tone: "muted" },
 };
 
-export const workoutLabels: Record<string, { label: string; tone: "success" | "warning" | "destructive" | "muted" | "info" }> = {
+export const workoutLabels: Record<
+  string,
+  { label: string; tone: "success" | "warning" | "destructive" | "muted" | "info" }
+> = {
   pendente: { label: "Pendente de revisão", tone: "warning" },
   ajustes: { label: "Devolvido para ajustes", tone: "info" },
   reprovado: { label: "Reprovado", tone: "destructive" },
@@ -47,7 +57,10 @@ export const workoutLabels: Record<string, { label: string; tone: "success" | "w
   sem_treino: { label: "Sem treino", tone: "muted" },
 };
 
-export const assessmentLabels: Record<string, { label: string; tone: "success" | "warning" | "muted" }> = {
+export const assessmentLabels: Record<
+  string,
+  { label: string; tone: "success" | "warning" | "muted" }
+> = {
   nao_enviada: { label: "Não enviada", tone: "muted" },
   aguardando: { label: "Aguardando análise", tone: "warning" },
   analisada: { label: "Analisada", tone: "success" },
@@ -64,9 +77,18 @@ export const goalOptions = [
 
 export const weekDays = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
 
-export const paymentMethods = ["Pix", "Dinheiro", "Cartão de crédito", "Cartão de débito", "Transferência", "Boleto", "Outro"];
+export const paymentMethods = [
+  "Pix",
+  "Dinheiro",
+  "Cartão de crédito",
+  "Cartão de débito",
+  "Transferência",
+  "Boleto",
+  "Outro",
+];
 
 export function errMsg(e: unknown) {
-  if (e && typeof e === "object" && "message" in e) return String((e as { message: unknown }).message);
+  if (e && typeof e === "object" && "message" in e)
+    return String((e as { message: unknown }).message);
   return "Ocorreu um erro inesperado.";
 }

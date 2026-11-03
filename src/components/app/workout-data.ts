@@ -7,7 +7,11 @@ export type Session = Tables<"workout_sessions"> & { exercises: Exercise[] };
 export type FullVersion = Tables<"workout_versions"> & { sessions: Session[] };
 
 export async function fetchVersion(versionId: string): Promise<FullVersion | null> {
-  const { data: v, error } = await supabase.from("workout_versions").select("*").eq("id", versionId).maybeSingle();
+  const { data: v, error } = await supabase
+    .from("workout_versions")
+    .select("*")
+    .eq("id", versionId)
+    .maybeSingle();
   if (error) throw error;
   if (!v) return null;
   const [{ data: sessions, error: e1 }, { data: exercises, error: e2 }] = await Promise.all([
@@ -16,11 +20,21 @@ export async function fetchVersion(versionId: string): Promise<FullVersion | nul
   ]);
   if (e1) throw e1;
   if (e2) throw e2;
-  return { ...v, sessions: (sessions ?? []).map((s) => ({ ...s, exercises: (exercises ?? []).filter((e) => e.session_id === s.id) })) };
+  return {
+    ...v,
+    sessions: (sessions ?? []).map((s) => ({
+      ...s,
+      exercises: (exercises ?? []).filter((e) => e.session_id === s.id),
+    })),
+  };
 }
 
 export function useVersion(versionId: string | undefined) {
-  return useQuery({ queryKey: ["version", versionId], enabled: !!versionId, queryFn: () => versionId ? fetchVersion(versionId) : null });
+  return useQuery({
+    queryKey: ["version", versionId],
+    enabled: !!versionId,
+    queryFn: () => (versionId ? fetchVersion(versionId) : null),
+  });
 }
 
 export function useStudentVersions(studentId: string | undefined) {
@@ -29,7 +43,11 @@ export function useStudentVersions(studentId: string | undefined) {
     enabled: !!studentId,
     queryFn: async () => {
       if (!studentId) return [];
-      const { data, error } = await supabase.from("workout_versions").select("*").eq("student_id", studentId).order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("workout_versions")
+        .select("*")
+        .eq("student_id", studentId)
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },

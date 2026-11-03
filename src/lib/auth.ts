@@ -20,7 +20,12 @@ export function useMe() {
         supabase.from("profiles").select("full_name").eq("id", u.user.id).maybeSingle(),
       ]);
       const isAdmin = (roles ?? []).some((r) => r.role === "admin");
-      return { userId: u.user.id, email: u.user.email ?? null, fullName: profile?.full_name ?? "", role: isAdmin ? "admin" : "student" };
+      return {
+        userId: u.user.id,
+        email: u.user.email ?? null,
+        fullName: profile?.full_name ?? "",
+        role: isAdmin ? "admin" : "student",
+      };
     },
     staleTime: 60_000,
   });

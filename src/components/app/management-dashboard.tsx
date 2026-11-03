@@ -1,12 +1,251 @@
-import {useSuspenseQuery} from '@tanstack/react-query';
-import {Link} from '@tanstack/react-router';
-import {managementOptions} from '@/lib/management';
-import {portalOptions} from '@/lib/portal';
-import {birthdayWithin,inactivityLevel,daysBetween,birthdayMessage} from '@/lib/management-rules';
-import {todayISO,dateBR} from '@/lib/format';
-import {supabase} from '@/integrations/supabase/client';
-import {Button} from '@/components/ui/button';
-import {Section,StatCard} from './ui-bits';
-import {ContactComposer} from './contact-composer';
-import {useAction,check} from './actions';
-export function ManagementDashboard({view}:{view:'stats'|'tasks'|'birthdays'}){const {data:d}=useSuspenseQuery(managementOptions);const {data:p}=useSuspenseQuery(portalOptions);const action=useAction();const today=todayISO();const birthdays=d.students.map(s=>({s,profile:d.profiles.find(p=>p.id===s.user_id),b:birthdayWithin(d.profiles.find(p=>p.id===s.user_id)?.birth_date??null)})).filter(x=>x.b).sort((a,b)=>(a.b?.days??0)-(b.b?.days??0));const inactive=d.students.filter(s=>{const a=d.assessments.find(a=>a.student_id===s.id);return inactivityLevel(d.sessions.find(t=>t.student_id===s.id&&t.finished_at)?.performed_on??null,a?.submitted_at??null,a?.available_days??[],{attention:p.settings?.attention_days??2,priority:p.settings?.priority_days??3,special:p.settings?.special_days??7});});const open=d.charges.filter(c=>c.status==='aberta');const candidates=d.goals.filter(g=>g.status==='possivel_conquista');const tasks=[...birthdays.filter(b=>b.b?.days===0&&!d.contacts.some(c=>c.student_id===b.s.id&&c.contact_type==='aniversario'&&c.birthday_year===Number(today.slice(0,4))&&c.sent_at)).map(b=>({key:`birthday-${b.s.id}`,label:`Parabenizar ${b.profile?.full_name}`,studentId:b.s.id})),...candidates.map(g=>({key:`goal-${g.id}`,label:`Confirmar conquista: ${g.name}`,studentId:g.student_id})),...inactive.map(s=>({key:`inactive-${s.id}`,label:`Acompanhar ${d.profiles.find(p=>p.id===s.user_id)?.full_name}`,studentId:s.id})),...open.filter(c=>daysBetween(today,c.due_date)<=2).map(c=>({key:`billing-${c.id}`,label:c.due_date<today?'Verificar mensalidade em atraso':c.due_date===today?'Confirmar pagamento / vencimento hoje':'Lembrar vencimento em dois dias',studentId:c.student_id})),...p.students.filter(s=>s.workout_status==='pendente').map(s=>({key:`workout-${s.student_id}`,label:`Aprovar treino: ${s.full_name}`,studentId:s.student_id}))];if(view==='stats')return <div className="space-y-5"><Section title="Alunos"><div className="grid grid-cols-2 gap-3 lg:grid-cols-4"><StatCard label="Alunos ativos" value={d.students.filter(s=>s.accompaniment_status==='ativo').length}/><StatCard label="Novos alunos neste mês" value={d.students.filter(s=>s.created_at.startsWith(today.slice(0,7))).length}/><StatCard label="Interessados em negociação" value={d.leads.filter(l=>l.status==='negociacao').length}/><StatCard label="Treinos aguardando aprovação" value={p.students.filter(s=>s.workout_status==='pendente').length}/></div></Section><Section title="Frequência e relacionamento"><div className="grid grid-cols-2 gap-3 lg:grid-cols-4"><StatCard label="Sem registrar treino" value={d.students.filter(s=>!d.sessions.some(t=>t.student_id===s.id&&t.finished_at)).length}/><StatCard label="Precisam de acompanhamento" value={inactive.length}/><StatCard label="Aniversariantes hoje" value={birthdays.filter(b=>b.b?.days===0).length}/><StatCard label="Metas aguardando confirmação" value={candidates.length}/></div></Section><Section title="Financeiro"><div className="grid grid-cols-2 gap-3 lg:grid-cols-4"><StatCard label="Vencem em dois dias" value={open.filter(c=>daysBetween(today,c.due_date)===2).length}/><StatCard label="Vencem hoje" value={open.filter(c=>c.due_date===today).length}/><StatCard label="Mensalidades em atraso" value={open.filter(c=>c.due_date<today).length}/><StatCard label="Acessos suspensos" value={p.students.filter(s=>s.financial_status==='bloqueado').length}/></div></Section></div>;if(view==='birthdays')return <Section title="Aniversariantes do dia e próximos sete dias">{birthdays.map(({s,profile,b})=><div key={s.id} className="flex flex-wrap items-center justify-between gap-3 border-b py-3"><div><b className="text-sm">{profile?.full_name}</b><p className="text-xs text-muted-foreground">{b?.days===0?'Hoje':dateBR(b?.date)} · {b?.age} anos{d.contacts.some(c=>c.student_id===s.id&&c.contact_type==='aniversario'&&c.birthday_year===Number(today.slice(0,4))&&c.sent_at)?' · Parabéns já enviados':''}</p></div><ContactComposer studentId={s.id} name={profile?.full_name??'Aluno'} phone={profile?.phone??''} type="aniversario" message={()=>birthdayMessage(profile?.full_name??'Aluno')} label="Gerar parabéns"/></div>)}{!birthdays.length&&<p className="text-sm text-muted-foreground">Nenhum aniversário nos próximos sete dias.</p>}</Section>;return <Section title="Minhas ações de hoje">{tasks.filter(t=>!d.actions.some(a=>a.action_key===t.key&&a.action_on===today)).map(t=><div key={t.key} className="flex flex-wrap items-center justify-between gap-3 border-b py-3"><p className="text-sm font-medium">{t.label}</p><div className="flex gap-2"><Button asChild size="sm" variant="outline"><Link to="/admin/alunos/$studentId" params={{studentId:t.studentId}}>Abrir aluno</Link></Button><Button size="sm" variant="secondary" disabled={action.isPending} onClick={()=>action.mutate(async()=>check(await supabase.from('daily_actions').upsert({action_key:t.key,action_on:today},{onConflict:'trainer_id,action_key,action_on'})))}>Concluir</Button></div></div>)}{d.leads.filter(l=>l.next_contact_on&&l.next_contact_on<=today&&!['matriculado','nao_convertido'].includes(l.status)).map(l=><div key={l.id} className="flex justify-between border-b py-3 text-sm"><span>Acompanhar interessado: {l.name}</span><Button asChild size="sm" variant="outline"><Link to="/admin/crm">Abrir CRM</Link></Button></div>)}{!tasks.length&&<p className="text-sm text-muted-foreground">Nenhuma ação pendente para hoje.</p>}</Section>;}
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { managementOptions } from "@/lib/management";
+import { portalOptions } from "@/lib/portal";
+import {
+  birthdayWithin,
+  inactivityLevel,
+  daysBetween,
+  birthdayMessage,
+} from "@/lib/management-rules";
+import { todayISO, dateBR } from "@/lib/format";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Section, StatCard } from "./ui-bits";
+import { ContactComposer } from "./contact-composer";
+import { useAction, check } from "./actions";
+export function ManagementDashboard({ view }: { view: "stats" | "tasks" | "birthdays" }) {
+  const { data: d } = useSuspenseQuery(managementOptions);
+  const { data: p } = useSuspenseQuery(portalOptions);
+  const action = useAction();
+  const today = todayISO();
+  const birthdays = d.students
+    .map((s) => ({
+      s,
+      profile: d.profiles.find((p) => p.id === s.user_id),
+      b: birthdayWithin(d.profiles.find((p) => p.id === s.user_id)?.birth_date ?? null),
+    }))
+    .filter((x) => x.b)
+    .sort((a, b) => (a.b?.days ?? 0) - (b.b?.days ?? 0));
+  const inactive = d.students.filter((s) => {
+    const a = d.assessments.find((a) => a.student_id === s.id);
+    return inactivityLevel(
+      d.sessions.find((t) => t.student_id === s.id && t.finished_at)?.performed_on ?? null,
+      a?.submitted_at ?? null,
+      a?.available_days ?? [],
+      {
+        attention: p.settings?.attention_days ?? 2,
+        priority: p.settings?.priority_days ?? 3,
+        special: p.settings?.special_days ?? 7,
+      },
+    );
+  });
+  const open = d.charges.filter((c) => c.status === "aberta");
+  const candidates = d.goals.filter((g) => g.status === "possivel_conquista");
+  const tasks = [
+    ...birthdays
+      .filter(
+        (b) =>
+          b.b?.days === 0 &&
+          !d.contacts.some(
+            (c) =>
+              c.student_id === b.s.id &&
+              c.contact_type === "aniversario" &&
+              c.birthday_year === Number(today.slice(0, 4)) &&
+              c.sent_at,
+          ),
+      )
+      .map((b) => ({
+        key: `birthday-${b.s.id}`,
+        label: `Parabenizar ${b.profile?.full_name}`,
+        studentId: b.s.id,
+      })),
+    ...candidates.map((g) => ({
+      key: `goal-${g.id}`,
+      label: `Confirmar conquista: ${g.name}`,
+      studentId: g.student_id,
+    })),
+    ...inactive.map((s) => ({
+      key: `inactive-${s.id}`,
+      label: `Acompanhar ${d.profiles.find((p) => p.id === s.user_id)?.full_name}`,
+      studentId: s.id,
+    })),
+    ...open
+      .filter((c) => daysBetween(today, c.due_date) <= 2)
+      .map((c) => ({
+        key: `billing-${c.id}`,
+        label:
+          c.due_date < today
+            ? "Verificar mensalidade em atraso"
+            : c.due_date === today
+              ? "Confirmar pagamento / vencimento hoje"
+              : "Lembrar vencimento em dois dias",
+        studentId: c.student_id,
+      })),
+    ...p.students
+      .filter((s) => s.workout_status === "pendente")
+      .map((s) => ({
+        key: `workout-${s.student_id}`,
+        label: `Aprovar treino: ${s.full_name}`,
+        studentId: s.student_id,
+      })),
+  ];
+  if (view === "stats")
+    return (
+      <div className="space-y-5">
+        <Section title="Alunos">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <StatCard
+              label="Alunos ativos"
+              value={d.students.filter((s) => s.accompaniment_status === "ativo").length}
+            />
+            <StatCard
+              label="Novos alunos neste mês"
+              value={d.students.filter((s) => s.created_at.startsWith(today.slice(0, 7))).length}
+            />
+            <StatCard
+              label="Interessados em negociação"
+              value={d.leads.filter((l) => l.status === "negociacao").length}
+            />
+            <StatCard
+              label="Treinos aguardando aprovação"
+              value={p.students.filter((s) => s.workout_status === "pendente").length}
+            />
+          </div>
+        </Section>
+        <Section title="Frequência e relacionamento">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <StatCard
+              label="Sem registrar treino"
+              value={
+                d.students.filter(
+                  (s) => !d.sessions.some((t) => t.student_id === s.id && t.finished_at),
+                ).length
+              }
+            />
+            <StatCard label="Precisam de acompanhamento" value={inactive.length} />
+            <StatCard
+              label="Aniversariantes hoje"
+              value={birthdays.filter((b) => b.b?.days === 0).length}
+            />
+            <StatCard label="Metas aguardando confirmação" value={candidates.length} />
+          </div>
+        </Section>
+        <Section title="Financeiro">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <StatCard
+              label="Vencem em dois dias"
+              value={open.filter((c) => daysBetween(today, c.due_date) === 2).length}
+            />
+            <StatCard label="Vencem hoje" value={open.filter((c) => c.due_date === today).length} />
+            <StatCard
+              label="Mensalidades em atraso"
+              value={open.filter((c) => c.due_date < today).length}
+            />
+            <StatCard
+              label="Acessos suspensos"
+              value={p.students.filter((s) => s.financial_status === "bloqueado").length}
+            />
+          </div>
+        </Section>
+      </div>
+    );
+  if (view === "birthdays")
+    return (
+      <Section title="Aniversariantes do dia e próximos sete dias">
+        {birthdays.map(({ s, profile, b }) => (
+          <div
+            key={s.id}
+            className="flex flex-wrap items-center justify-between gap-3 border-b py-3"
+          >
+            <div>
+              <b className="text-sm">{profile?.full_name}</b>
+              <p className="text-xs text-muted-foreground">
+                {b?.days === 0 ? "Hoje" : dateBR(b?.date)} · {b?.age} anos
+                {d.contacts.some(
+                  (c) =>
+                    c.student_id === s.id &&
+                    c.contact_type === "aniversario" &&
+                    c.birthday_year === Number(today.slice(0, 4)) &&
+                    c.sent_at,
+                )
+                  ? " · Parabéns já enviados"
+                  : ""}
+              </p>
+            </div>
+            <ContactComposer
+              studentId={s.id}
+              name={profile?.full_name ?? "Aluno"}
+              phone={profile?.phone ?? ""}
+              type="aniversario"
+              message={() => birthdayMessage(profile?.full_name ?? "Aluno")}
+              label="Gerar parabéns"
+            />
+          </div>
+        ))}
+        {!birthdays.length && (
+          <p className="text-sm text-muted-foreground">
+            Nenhum aniversário nos próximos sete dias.
+          </p>
+        )}
+      </Section>
+    );
+  return (
+    <Section title="Minhas ações de hoje">
+      {tasks
+        .filter((t) => !d.actions.some((a) => a.action_key === t.key && a.action_on === today))
+        .map((t) => (
+          <div
+            key={t.key}
+            className="flex flex-wrap items-center justify-between gap-3 border-b py-3"
+          >
+            <p className="text-sm font-medium">{t.label}</p>
+            <div className="flex gap-2">
+              <Button asChild size="sm" variant="outline">
+                <Link to="/admin/alunos/$studentId" params={{ studentId: t.studentId }}>
+                  Abrir aluno
+                </Link>
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                disabled={action.isPending}
+                onClick={() =>
+                  action.mutate(async () =>
+                    check(
+                      await supabase
+                        .from("daily_actions")
+                        .upsert(
+                          { action_key: t.key, action_on: today },
+                          { onConflict: "trainer_id,action_key,action_on" },
+                        ),
+                    ),
+                  )
+                }
+              >
+                Concluir
+              </Button>
+            </div>
+          </div>
+        ))}
+      {d.leads
+        .filter(
+          (l) =>
+            l.next_contact_on &&
+            l.next_contact_on <= today &&
+            !["matriculado", "nao_convertido"].includes(l.status),
+        )
+        .map((l) => (
+          <div key={l.id} className="flex justify-between border-b py-3 text-sm">
+            <span>Acompanhar interessado: {l.name}</span>
+            <Button asChild size="sm" variant="outline">
+              <Link to="/admin/crm">Abrir CRM</Link>
+            </Button>
+          </div>
+        ))}
+      {!tasks.length && (
+        <p className="text-sm text-muted-foreground">Nenhuma ação pendente para hoje.</p>
+      )}
+    </Section>
+  );
+}
