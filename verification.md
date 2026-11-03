@@ -20,6 +20,7 @@ Eight additive migrations extend profiles, students, trainer settings, exercise 
 - Real authenticated data requests reject another/nonowned student financial lookup and deprecated private-note reads.
 - Anonymous financial/contact read checks rejected or returned no private rows.
 - Database inspection confirms RLS enabled for every application table.
+- William's photo was edited in place (same CDN asset, same URL): the muted-speaker badge was removed by masked inpainting and a dark navy bottom gradient was composited. The served asset bytes changed (168531 vs 247735) and both `/` and `/william` render the new image; the badge no longer appears.
 
 ## Not verified / remaining
 - No separate real student accounts are available. Student-to-student isolation, suspended student navigation, workout completion, payment/reactivation, goal confirmation and lead conversion have not been exercised with real student data.
