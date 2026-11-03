@@ -107,6 +107,7 @@ export function StudentHome({ d, p }: { d: StudentData; p: PortalData }) {
 export function StudentAccount({ d }: { d: StudentData }) {
   const [name, setName] = useState(d.profile.full_name);
   const [code, setCode] = useState("");
+  const [deleteText, setDeleteText] = useState("");
   const [photo, setPhoto] = useState(!!d.student.photo_consent_at);
   const [data, setData] = useState(!!d.student.data_consent_at);
   const action = useAction();
@@ -181,19 +182,28 @@ export function StudentAccount({ d }: { d: StudentData }) {
         </div>
       </Section>
       <Section title="Excluir conta">
+        <div className="mb-3 max-w-xs">
+          <Field label="Digite EXCLUIR para liberar o botão">
+            <Input
+              value={deleteText}
+              autoComplete="off"
+              onChange={(e) => setDeleteText(e.target.value)}
+            />
+          </Field>
+        </div>
         <Confirm
           destructive
           title="Excluir sua conta e seus dados?"
           description="Seus treinos, registros, fotografias e acesso serão removidos. Esta ação não pode ser desfeita."
           confirmLabel="Excluir definitivamente"
           trigger={
-            <Button variant="destructive" disabled={action.isPending}>
+            <Button variant="destructive" disabled={action.isPending || deleteText !== "EXCLUIR"}>
               Excluir minha conta
             </Button>
           }
           onConfirm={() =>
             action.mutate(async () => {
-              await deleteFn();
+              await deleteFn({ data: { confirmation: deleteText } });
               await signOut();
             })
           }

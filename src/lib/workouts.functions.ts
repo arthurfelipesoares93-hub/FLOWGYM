@@ -264,13 +264,18 @@ Regras:
     return { versionId: saved.data };
   });
 
+const deleteAccountSchema = z.object({ confirmation: z.literal("EXCLUIR") });
+
 export const deleteMyAccount = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((input: { confirmation: string }) => deleteAccountSchema.parse(input))
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
     const studentResult = await supabase.rpc("my_student_id");
     if (studentResult.error) throw new Error(studentResult.error.message);
     const sid = studentResult.data;
+    // Somente contas de aluno: a conta do treinador nunca é excluída por esta rota.
+    if (!sid) throw new Error("Esta conta não pode ser excluída por aqui.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (sid) {
       for (const bucket of ["body-photos", "receipts"]) {
