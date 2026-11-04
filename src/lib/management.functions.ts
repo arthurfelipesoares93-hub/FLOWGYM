@@ -5,9 +5,10 @@ export const getManagement = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const db = context.supabase;
-    const role = await db.rpc("has_role", { _user_id: context.userId, _role: "admin" });
-    if (role.error || !role.data) throw new Error("Acesso exclusivo do personal.");
-    const results = await Promise.all([
+    // A checagem de papel roda junto das consultas (uma ida ao banco a menos). O RLS já limita
+    // cada tabela ao personal; se o papel falhar, os dados lidos são descartados antes do retorno.
+    const [role, ...results] = await Promise.all([
+      db.rpc("has_role", { _user_id: context.userId, _role: "admin" }),
       db.from("crm_leads").select("*").order("created_at", { ascending: false }),
       db.from("contact_history").select("*").order("created_at", { ascending: false }),
       db.from("student_goals").select("*").order("created_at", { ascending: false }),
@@ -29,6 +30,7 @@ export const getManagement = createServerFn({ method: "GET" })
       db.from("charges").select("*").order("due_date"),
       db.from("daily_actions").select("*"),
     ]);
+    if (role.error || !role.data) throw new Error("Acesso exclusivo do personal.");
     for (const r of results) if (r.error) throw new Error(r.error.message);
     const [
       leads,
