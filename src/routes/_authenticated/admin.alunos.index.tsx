@@ -55,7 +55,7 @@ function Page() {
           </Button>
         }
       />
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <Field label="Buscar aluno">
           <Input
             value={q}
@@ -72,7 +72,7 @@ function Page() {
         </Field>
         <Field label="Situação financeira">
           <select
-            className="h-10 rounded-md border bg-background px-3"
+            className="h-10 w-full rounded-md border bg-background px-3"
             value={status}
             onChange={(e) =>
               navigate({
@@ -91,21 +91,21 @@ function Page() {
             ))}
           </select>
         </Field>
+        <Field label="Acompanhamento">
+          <select
+            className="h-10 w-full rounded-md border bg-background px-3"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="">Todos os alunos</option>
+            <option value="ativo">Ativos</option>
+            <option value="inativo">Inativos</option>
+            <option value="sem_treino">Sem registro de treino</option>
+            <option value="sem_evolucao">Sem atualizar evolução</option>
+            <option value="contato">Precisam de contato</option>
+          </select>
+        </Field>
       </div>
-      <Field label="Acompanhamento">
-        <select
-          className="h-10 w-full rounded-md border bg-background px-3"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="">Todos os alunos</option>
-          <option value="ativo">Ativos</option>
-          <option value="inativo">Inativos</option>
-          <option value="sem_treino">Sem registro de treino</option>
-          <option value="sem_evolucao">Sem atualizar evolução</option>
-          <option value="contato">Precisam de contato</option>
-        </select>
-      </Field>
       <StudentList
         students={p.students.filter(
           (s) =>

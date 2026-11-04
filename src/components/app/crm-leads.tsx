@@ -80,7 +80,7 @@ export function CRMLeads() {
           </select>
         </Field>
       </div>
-      <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-4">
+      <div className="scroll-thin -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-4">
         {leadStatuses
           .filter(([v]) => !status || v === status)
           .map(([col, colLabel]) => {

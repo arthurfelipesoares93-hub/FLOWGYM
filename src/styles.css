@@ -154,3 +154,11 @@
 
 [data-blue-theme="oceano"] { --primary: oklch(0.5 0.15 235); --sidebar: oklch(0.23 0.06 240); --sidebar-primary: oklch(0.55 0.16 235); }
 [data-blue-theme="eletrico"] { --primary: oklch(0.53 0.24 263); --sidebar: oklch(0.22 0.08 260); --sidebar-primary: oklch(0.58 0.23 263); }
+
+/* Barra de rolagem fina e no tom do tema, sem setas. */
+.scroll-thin { scrollbar-width: thin; scrollbar-color: color-mix(in oklab, var(--muted-foreground) 45%, transparent) transparent; }
+.scroll-thin::-webkit-scrollbar { height: 8px; width: 8px; }
+.scroll-thin::-webkit-scrollbar-track { background: transparent; }
+.scroll-thin::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--muted-foreground) 45%, transparent); border-radius: 9999px; }
+.scroll-thin::-webkit-scrollbar-thumb:hover { background: color-mix(in oklab, var(--muted-foreground) 70%, transparent); }
+.scroll-thin::-webkit-scrollbar-button { display: none; }
