@@ -342,7 +342,9 @@ function LeadForm({ lead, onClose }: { lead: Tables<"crm_leads"> | null; onClose
           <Textarea maxLength={4000} value={notes} onChange={(e) => setNotes(e.target.value)} />
         </Field>
         <div className="flex gap-2">
-          <Button disabled={action.isPending}>Salvar interessado</Button>
+          <Button disabled={action.isPending}>
+            {action.isPending ? "Salvando…" : "Salvar interessado"}
+          </Button>
           <Button type="button" variant="outline" onClick={onClose}>
             Cancelar
           </Button>
