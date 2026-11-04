@@ -208,10 +208,10 @@ export function JourneyView({
 const MEDALS = ["text-warning", "text-muted-foreground", "text-chart-3"];
 
 /** Ranking de alunos por XP, para o treinador. */
-export function StudentRanking() {
+export function useRankingRows(): RankingRow[] {
   const { data: d } = useSuspenseQuery(managementOptions);
   const today = todayISO();
-  const rows = d.students
+  return d.students
     .map((s) => {
       const finished = d.sessions.filter((t) => t.student_id === s.id && t.finished_at);
       const goal = Math.max(
@@ -227,9 +227,7 @@ export function StudentRanking() {
         lvl: xpAndLevel(finished, goal),
       };
     })
-    .sort((a, b) => b.lvl.xp - a.lvl.xp || b.streak - a.streak)
-    .slice(0, 10);
-  return <RankingList rows={rows} />;
+    .sort((a, b) => b.lvl.xp - a.lvl.xp || b.streak - a.streak);
 }
 
 export type RankingRow = {
@@ -241,9 +239,15 @@ export type RankingRow = {
   lvl: ReturnType<typeof xpAndLevel>;
 };
 
-export function RankingList({ rows }: { rows: RankingRow[] }) {
+export function RankingList({
+  rows,
+  title = "Ranking de alunos",
+}: {
+  rows: RankingRow[];
+  title?: string;
+}) {
   return (
-    <Section title="Ranking de alunos">
+    <Section title={title}>
       {!rows.length || rows.every((r) => r.total === 0) ? (
         <p className="py-6 text-center text-sm text-muted-foreground">
           O ranking aparece quando os alunos concluírem treinos.

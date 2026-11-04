@@ -7,6 +7,7 @@ import {
   Bell,
   ContactRound,
   ChartNoAxesCombined,
+  Trophy,
 } from "lucide-react";
 import { portalOptions } from "@/lib/portal";
 import { Shell } from "@/components/app/shell";
@@ -34,6 +35,7 @@ function Page() {
         { to: "/admin/alunos", label: "CRM e Gestão de Alunos", icon: Users },
         { to: "/admin/crm", label: "Interessados", icon: ContactRound },
         { to: "/admin/relatorios", label: "Relatórios", icon: ChartNoAxesCombined },
+        { to: "/admin/ranking", label: "Ranking de alunos", icon: Trophy },
       ]}
       footerNav={[
         { to: "/admin/notificacoes", label: "Notificações", icon: Bell },

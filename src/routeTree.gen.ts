@@ -25,6 +25,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
 import { Route as AuthenticatedAdminCrmRouteImport } from './routes/_authenticated/admin.crm'
 import { Route as AuthenticatedAdminNotificacoesRouteImport } from './routes/_authenticated/admin.notificacoes'
+import { Route as AuthenticatedAdminRankingRouteImport } from './routes/_authenticated/admin.ranking'
 import { Route as AuthenticatedAdminRelatoriosRouteImport } from './routes/_authenticated/admin.relatorios'
 import { Route as AuthenticatedAlunoIndexRouteImport } from './routes/_authenticated/aluno.index'
 import { Route as AuthenticatedAlunoContaRouteImport } from './routes/_authenticated/aluno.conta'
@@ -118,6 +119,12 @@ const AuthenticatedAdminNotificacoesRoute =
     path: '/notificacoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminRankingRoute =
+  AuthenticatedAdminRankingRouteImport.update({
+    id: '/ranking',
+    path: '/ranking',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminRelatoriosRoute =
   AuthenticatedAdminRelatoriosRouteImport.update({
     id: '/relatorios',
@@ -196,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
+  '/admin/ranking': typeof AuthenticatedAdminRankingRoute
   '/admin/relatorios': typeof AuthenticatedAdminRelatoriosRoute
   '/aluno/conta': typeof AuthenticatedAlunoContaRoute
   '/aluno/evolucao': typeof AuthenticatedAlunoEvolucaoRoute
@@ -222,6 +230,7 @@ export interface FileRoutesByTo {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
+  '/admin/ranking': typeof AuthenticatedAdminRankingRoute
   '/admin/relatorios': typeof AuthenticatedAdminRelatoriosRoute
   '/aluno/conta': typeof AuthenticatedAlunoContaRoute
   '/aluno/evolucao': typeof AuthenticatedAlunoEvolucaoRoute
@@ -252,6 +261,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/_authenticated/admin/crm': typeof AuthenticatedAdminCrmRoute
   '/_authenticated/admin/notificacoes': typeof AuthenticatedAdminNotificacoesRoute
+  '/_authenticated/admin/ranking': typeof AuthenticatedAdminRankingRoute
   '/_authenticated/admin/relatorios': typeof AuthenticatedAdminRelatoriosRoute
   '/_authenticated/aluno/conta': typeof AuthenticatedAlunoContaRoute
   '/_authenticated/aluno/evolucao': typeof AuthenticatedAlunoEvolucaoRoute
@@ -282,6 +292,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/crm'
     | '/admin/notificacoes'
+    | '/admin/ranking'
     | '/admin/relatorios'
     | '/aluno/conta'
     | '/aluno/evolucao'
@@ -308,6 +319,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/crm'
     | '/admin/notificacoes'
+    | '/admin/ranking'
     | '/admin/relatorios'
     | '/aluno/conta'
     | '/aluno/evolucao'
@@ -337,6 +349,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/configuracoes'
     | '/_authenticated/admin/crm'
     | '/_authenticated/admin/notificacoes'
+    | '/_authenticated/admin/ranking'
     | '/_authenticated/admin/relatorios'
     | '/_authenticated/aluno/conta'
     | '/_authenticated/aluno/evolucao'
@@ -477,6 +490,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminNotificacoesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/ranking': {
+      id: '/_authenticated/admin/ranking'
+      path: '/ranking'
+      fullPath: '/admin/ranking'
+      preLoaderRoute: typeof AuthenticatedAdminRankingRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/relatorios': {
       id: '/_authenticated/admin/relatorios'
       path: '/relatorios'
@@ -561,6 +581,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
   AuthenticatedAdminCrmRoute: typeof AuthenticatedAdminCrmRoute
   AuthenticatedAdminNotificacoesRoute: typeof AuthenticatedAdminNotificacoesRoute
+  AuthenticatedAdminRankingRoute: typeof AuthenticatedAdminRankingRoute
   AuthenticatedAdminRelatoriosRoute: typeof AuthenticatedAdminRelatoriosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminAlunosStudentIdRoute: typeof AuthenticatedAdminAlunosStudentIdRoute
@@ -571,6 +592,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
   AuthenticatedAdminCrmRoute: AuthenticatedAdminCrmRoute,
   AuthenticatedAdminNotificacoesRoute: AuthenticatedAdminNotificacoesRoute,
+  AuthenticatedAdminRankingRoute: AuthenticatedAdminRankingRoute,
   AuthenticatedAdminRelatoriosRoute: AuthenticatedAdminRelatoriosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminAlunosStudentIdRoute:

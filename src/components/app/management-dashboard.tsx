@@ -13,7 +13,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Section, StatCard } from "./ui-bits";
 import { ContactComposer } from "./contact-composer";
-import { StudentRanking } from "./student-journey";
 import {
   ChargeSplitChart,
   LeadFunnelChart,
@@ -106,7 +105,6 @@ export function ManagementDashboard({ view }: { view: "stats" | "tasks" | "birth
           <LeadFunnelChart leads={d.leads} />
           <ChargeSplitChart charges={d.charges} />
         </div>
-        <StudentRanking />
         <Section title="Alunos">
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <StatCard

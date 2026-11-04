@@ -1,4 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { Podium } from "@/components/app/ranking-page";
 import { JourneyView, RankingList, type RankingRow } from "@/components/app/student-journey";
 import {
   ChargeSplitChart,
@@ -106,7 +107,9 @@ function Page() {
       </header>
       <h2 className="text-2xl">Jornada do aluno (Ana Souza)</h2>
       <JourneyView sessions={students[0]!.sessions} goalPerWeek={3} />
-      <RankingList rows={rows} />
+      <h2 className="text-2xl">Página de ranking</h2>
+      <Podium rows={rows} />
+      <RankingList rows={rows} title="Classificação completa" />
       <div className="grid gap-4 lg:grid-cols-2">
         <RevenueChart payments={payments} />
         <StudentsChart students={createdAt} />
