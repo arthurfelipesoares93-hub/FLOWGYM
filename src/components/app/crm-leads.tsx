@@ -9,7 +9,7 @@ import type { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Field, Section, PageHeader, EmptyState } from "./ui-bits";
+import { Field, Section, PageHeader, EmptyState, Confirm } from "./ui-bits";
 import { ContactComposer, ContactHistory } from "./contact-composer";
 import { useAction, check } from "./actions";
 import { dateBR, todayISO } from "@/lib/format";
@@ -45,6 +45,8 @@ export function CRMLeads() {
     action.mutate(async () =>
       check(await supabase.from("crm_leads").update({ status: next }).eq("id", id)),
     );
+  const remove = (id: string) =>
+    action.mutate(async () => check(await supabase.from("crm_leads").delete().eq("id", id)));
   return (
     <div className="space-y-5">
       <PageHeader
@@ -128,9 +130,30 @@ export function CRMLeads() {
                           </span>
                           <h3 className="truncate font-semibold">{l.name}</h3>
                         </div>
-                        <Button size="sm" variant="ghost" onClick={() => setSelected(l)}>
-                          Editar
-                        </Button>
+                        <div className="flex shrink-0 items-center gap-1">
+                          <Button size="sm" variant="ghost" onClick={() => setSelected(l)}>
+                            Editar
+                          </Button>
+                          {!l.converted_student_id && (
+                            <Confirm
+                              destructive
+                              title="Excluir este interessado?"
+                              description="O cadastro e o histórico de contatos dele serão removidos. Esta ação não pode ser desfeita."
+                              confirmLabel="Excluir"
+                              trigger={
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="text-destructive hover:text-destructive"
+                                  aria-label={`Excluir ${l.name}`}
+                                >
+                                  Excluir
+                                </Button>
+                              }
+                              onConfirm={() => remove(l.id)}
+                            />
+                          )}
+                        </div>
                       </div>
                       <div className="mt-2 flex flex-wrap gap-1.5">
                         {l.objective && (
