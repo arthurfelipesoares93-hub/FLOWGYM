@@ -1,7 +1,10 @@
 import { Flame, Medal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "./ui-bits";
-import { demoRankingRows } from "@/lib/demo-ranking";
+import { useState } from "react";
+import { Plus, RotateCcw, UserPlus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DEMO_SEED, addDemoSession, demoRankingRows, nextDemoStudent } from "@/lib/demo-ranking";
 import { useRankingRows, type RankingRow } from "@/lib/ranking";
 import { RankingList } from "./student-journey";
 
@@ -67,7 +70,8 @@ export function RankingPage({ demo = false }: { demo?: boolean }) {
   const real = useRankingRows();
   // Dados fictícios só no modo de desenvolvimento (?demo=1); em produção o parâmetro é ignorado.
   const useDemo = demo && import.meta.env.DEV;
-  const rows = useDemo ? demoRankingRows() : real;
+  const [demoStudents, setDemoStudents] = useState(DEMO_SEED);
+  const rows = useDemo ? demoRankingRows(demoStudents) : real;
   const hasData = rows.some((r) => r.total > 0);
   return (
     <div className="space-y-6">
@@ -84,8 +88,41 @@ export function RankingPage({ demo = false }: { demo?: boolean }) {
           O ranking aparece quando os alunos concluírem treinos.
         </p>
       )}
+      {useDemo && (
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setDemoStudents((c) => [...c, nextDemoStudent(c)])}
+          >
+            <UserPlus className="h-4 w-4" /> Adicionar aluno fictício
+          </Button>
+          <Button variant="ghost" onClick={() => setDemoStudents(DEMO_SEED)}>
+            <RotateCcw className="h-4 w-4" /> Reiniciar
+          </Button>
+        </div>
+      )}
       <Podium rows={rows} />
-      {hasData && <RankingList rows={rows} title="Classificação completa" />}
+      {(hasData || useDemo) && (
+        <RankingList
+          rows={rows}
+          title="Classificação completa"
+          renderAction={
+            useDemo
+              ? (r) => (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="ml-3 shrink-0"
+                    aria-label={`Registrar treino de ${r.name}`}
+                    onClick={() => setDemoStudents((c) => addDemoSession(c, r.id))}
+                  >
+                    <Plus className="h-3.5 w-3.5" /> Treino
+                  </Button>
+                )
+              : undefined
+          }
+        />
+      )}
     </div>
   );
 }

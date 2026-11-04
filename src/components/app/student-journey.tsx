@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Flame, Lock, Medal, Sparkles, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -211,9 +212,11 @@ const MEDALS = ["text-warning", "text-muted-foreground", "text-chart-3"];
 export function RankingList({
   rows,
   title = "Ranking de alunos",
+  renderAction,
 }: {
   rows: RankingRow[];
   title?: string;
+  renderAction?: ((row: RankingRow) => ReactNode) | undefined;
 }) {
   return (
     <Section title={title}>
@@ -252,6 +255,7 @@ export function RankingList({
                   <Flame className="h-3.5 w-3.5" /> {r.streak} sem.
                 </p>
               </div>
+              {renderAction?.(r)}
             </li>
           ))}
         </ol>

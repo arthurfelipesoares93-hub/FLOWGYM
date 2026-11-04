@@ -4,7 +4,9 @@ import { buildRankingRow, sortRanking, type RankingRow } from "./ranking";
 const DAY = 86_400_000;
 
 /** Alunos fictícios para ver o ranking pronto. Só é usado no modo de desenvolvimento. */
-const DEMO: { id: string; name: string; goal: number; daysAgo: number[] }[] = [
+export type DemoStudent = { id: string; name: string; goal: number; daysAgo: number[] };
+
+export const DEMO_SEED: DemoStudent[] = [
   {
     id: "demo-1",
     name: "Ana Souza",
@@ -22,10 +24,44 @@ const DEMO: { id: string; name: string; goal: number; daysAgo: number[] }[] = [
   { id: "demo-7", name: "Gabi Nunes", goal: 3, daysAgo: [] },
 ];
 
-export function demoRankingRows(today = todayISO()): RankingRow[] {
+const MORE_NAMES = [
+  "Heitor Alves",
+  "Isabela Rocha",
+  "João Pedro",
+  "Karina Melo",
+  "Lucas Prado",
+  "Marina Teles",
+  "Nicolas Faria",
+  "Olívia Campos",
+  "Paulo Neri",
+  "Quésia Lopes",
+  "Rafael Duarte",
+  "Sofia Braga",
+];
+
+/** Próximo aluno fictício da lista, sem treinos. */
+export function nextDemoStudent(current: DemoStudent[]): DemoStudent {
+  const n = current.length + 1;
+  return {
+    id: `demo-${n}`,
+    name: MORE_NAMES[(n - DEMO_SEED.length - 1) % MORE_NAMES.length] ?? `Aluno ${n}`,
+    goal: 3,
+    daysAgo: [],
+  };
+}
+
+/** Registra um treino concluído hoje para o aluno fictício. */
+export function addDemoSession(current: DemoStudent[], id: string): DemoStudent[] {
+  return current.map((s) => (s.id === id ? { ...s, daysAgo: [0, ...s.daysAgo] } : s));
+}
+
+export function demoRankingRows(
+  students: DemoStudent[] = DEMO_SEED,
+  today = todayISO(),
+): RankingRow[] {
   const base = Date.parse(`${today}T12:00:00Z`);
   return sortRanking(
-    DEMO.map((s) =>
+    students.map((s) =>
       buildRankingRow(
         s.id,
         s.name,
