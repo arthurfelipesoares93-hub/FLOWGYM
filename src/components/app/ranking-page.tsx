@@ -66,10 +66,10 @@ export function Podium({ rows }: { rows: RankingRow[] }) {
   );
 }
 
-export function RankingPage({ demo = false }: { demo?: boolean }) {
+export function RankingPage() {
   const real = useRankingRows();
-  // Dados fictícios só no modo de desenvolvimento (?demo=1); em produção o parâmetro é ignorado.
-  const useDemo = demo && import.meta.env.DEV;
+  // Enquanto nenhum aluno tiver treino concluído, o modo de desenvolvimento mostra alunos fictícios.
+  const useDemo = import.meta.env.DEV && !real.some((r) => r.total > 0);
   const [demoStudents, setDemoStudents] = useState(DEMO_SEED);
   const rows = useDemo ? demoRankingRows(demoStudents) : real;
   const hasData = rows.some((r) => r.total > 0);
@@ -79,7 +79,7 @@ export function RankingPage({ demo = false }: { demo?: boolean }) {
         title="Ranking de alunos"
         description={
           useDemo
-            ? "Dados fictícios de demonstração (modo de desenvolvimento)."
+            ? "Dados fictícios de demonstração: ainda não há treinos reais. Eles somem quando um aluno concluir um treino."
             : "Classificação por XP: 10 XP por treino concluído e 25 XP por semana com a meta batida."
         }
       />
