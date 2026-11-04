@@ -152,7 +152,40 @@ export function Finance({ d, trainer }: { d: StudentData; trainer: boolean }) {
         </Section>
       )}
       <Section title="Cobranças">
-        <div className="overflow-x-auto">
+        <ul className="space-y-3 sm:hidden">
+          {d.charges.map((c) => (
+            <li key={c.id} className="rounded-xl border bg-card p-4 shadow-card">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs text-muted-foreground">Vencimento</p>
+                  <p className="font-semibold">{dateBR(c.due_date)}</p>
+                </div>
+                <p className="text-lg font-bold">{brl(c.amount)}</p>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {dateBR(c.period_start)} — {dateBR(c.period_end)}
+              </p>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                <span className="text-sm font-medium">
+                  {c.status === "aberta" ? "Em aberto" : c.status === "paga" ? "Paga" : "Cancelada"}
+                </span>
+                {trainer && c.status === "aberta" && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setPayCharge(c.id);
+                      setAmount(String(c.amount));
+                    }}
+                  >
+                    Registrar pagamento
+                  </Button>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="hidden overflow-x-auto sm:block">
           <table className="w-full min-w-[440px] text-left text-sm">
             <thead className="text-xs uppercase text-muted-foreground">
               <tr>
