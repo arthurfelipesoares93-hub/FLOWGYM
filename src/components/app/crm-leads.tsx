@@ -104,7 +104,7 @@ export function CRMLeads() {
                   const lead = d.leads.find((x) => x.id === id);
                   if (lead && lead.status !== col) move(lead.id, col ?? "novo");
                 }}
-                className={`relative flex w-[85vw] max-w-[320px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border bg-muted/30 p-3 pt-4 backdrop-blur transition-all ${over === col ? "border-2 border-dashed border-primary bg-primary/5 shadow-lg" : ""}`}
+                className={`relative flex h-[34rem] w-[85vw] max-w-[400px] shrink-0 snap-start flex-col overflow-hidden sm:h-[38rem] sm:w-[380px] rounded-2xl border bg-muted/30 p-3 pt-4 backdrop-blur transition-all ${over === col ? "border-2 border-dashed border-primary bg-primary/5 shadow-lg" : ""}`}
               >
                 <span className={`absolute inset-x-0 top-0 h-1 ${tone.bar}`} />
                 <header className="mb-3 flex items-center justify-between gap-2">
@@ -115,7 +115,7 @@ export function CRMLeads() {
                     {items.length}
                   </span>
                 </header>
-                <div className="flex min-h-24 flex-col gap-3">
+                <div className="scroll-thin -mr-1 flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1">
                   {items.map((l) => (
                     <article
                       key={l.id}
