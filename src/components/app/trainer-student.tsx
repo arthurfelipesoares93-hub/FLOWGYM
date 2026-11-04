@@ -6,7 +6,7 @@ import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { StudentData } from "@/lib/portal";
-import { PageHeader, Section, Field, EmptyState } from "./ui-bits";
+import { PageHeader, Section, Field, EmptyState, Confirm } from "./ui-bits";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -22,6 +22,17 @@ export function TrainerStudent({ d }: { d: StudentData }) {
   const action = useAction();
   const [notes, setNotes] = useState("");
   const [reason, setReason] = useState("");
+  const toggleBlock = () =>
+    action.mutate(async () => {
+      if (!reason.trim()) throw new Error("Informe um motivo.");
+      check(
+        await supabase.rpc("set_manual_block", {
+          _student_id: d.student.id,
+          _blocked: !d.student.manual_block,
+          _reason: reason,
+        }),
+      );
+    });
   const privateNotes = useQuery({
     queryKey: ["private-notes", d.student.id],
     queryFn: async () => {
@@ -147,32 +158,24 @@ export function TrainerStudent({ d }: { d: StudentData }) {
               <Field label="Motivo do bloqueio ou desbloqueio">
                 <Textarea required value={reason} onChange={(e) => setReason(e.target.value)} />
               </Field>
-              <Button
-                className="mt-3"
-                variant={d.student.manual_block ? "default" : "destructive"}
-                disabled={action.isPending}
-                onClick={() =>
-                  action.mutate(async () => {
-                    if (!reason.trim()) throw new Error("Informe um motivo.");
-                    if (
-                      !d.student.manual_block &&
-                      !window.confirm(
-                        "Suspender o acesso do aluno? Seus dados e históricos serão preservados.",
-                      )
-                    )
-                      return;
-                    check(
-                      await supabase.rpc("set_manual_block", {
-                        _student_id: d.student.id,
-                        _blocked: !d.student.manual_block,
-                        _reason: reason,
-                      }),
-                    );
-                  })
-                }
-              >
-                {d.student.manual_block ? "Desbloquear acesso" : "Bloquear acesso"}
-              </Button>
+              {d.student.manual_block ? (
+                <Button className="mt-3" disabled={action.isPending} onClick={toggleBlock}>
+                  Desbloquear acesso
+                </Button>
+              ) : (
+                <Confirm
+                  destructive
+                  title="Suspender o acesso do aluno?"
+                  description="Seus dados e históricos serão preservados."
+                  confirmLabel="Bloquear acesso"
+                  trigger={
+                    <Button className="mt-3" variant="destructive" disabled={action.isPending}>
+                      Bloquear acesso
+                    </Button>
+                  }
+                  onConfirm={toggleBlock}
+                />
+              )}
             </Section>
             <Section title="Histórico de alterações">
               {audit.data?.map((a) => (
