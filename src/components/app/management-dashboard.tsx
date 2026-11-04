@@ -13,6 +13,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Section, StatCard } from "./ui-bits";
 import { ContactComposer } from "./contact-composer";
+import { StudentRanking } from "./student-journey";
+import {
+  ChargeSplitChart,
+  LeadFunnelChart,
+  RevenueChart,
+  StudentsChart,
+} from "./management-charts";
 import { useAction, check } from "./actions";
 export function ManagementDashboard({ view }: { view: "stats" | "tasks" | "birthdays" }) {
   const { data: d } = useSuspenseQuery(managementOptions);
@@ -93,6 +100,13 @@ export function ManagementDashboard({ view }: { view: "stats" | "tasks" | "birth
   if (view === "stats")
     return (
       <div className="space-y-5">
+        <div className="grid gap-4 lg:grid-cols-2">
+          <RevenueChart payments={d.payments} />
+          <StudentsChart students={d.students} />
+          <LeadFunnelChart leads={d.leads} />
+          <ChargeSplitChart charges={d.charges} />
+        </div>
+        <StudentRanking />
         <Section title="Alunos">
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <StatCard

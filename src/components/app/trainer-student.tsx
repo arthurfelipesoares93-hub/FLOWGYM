@@ -14,6 +14,7 @@ import { AssessmentView } from "./assessment-view";
 import { TrainerWorkouts } from "./workout-editor";
 import { Finance } from "./finance";
 import { Performance } from "./performance";
+import { StudentJourney } from "./student-journey";
 import { PhotoGallery } from "./photo-gallery";
 import { useAction, check } from "./actions";
 import { dateTimeBR } from "@/lib/format";
@@ -117,6 +118,7 @@ export function TrainerStudent({ d }: { d: StudentData }) {
             name={d.profile.full_name}
             phone={d.profile.phone}
           />
+          <StudentJourney studentId={d.student.id} goalPerWeek={d.assessment?.days_per_week ?? 3} />
           <Performance studentId={d.student.id} />
         </TabsContent>
         <TabsContent value="fotos">

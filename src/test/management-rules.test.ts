@@ -8,6 +8,24 @@ import {
   billingMessage,
 } from "@/lib/management-rules";
 import { ageFrom, hasMeaningfulText } from "@/lib/format";
+import {
+  chargeSplit,
+  lastMonths,
+  leadFunnel,
+  monthLabel,
+  revenueByMonth,
+  sessionsByWeek,
+  studentsByMonth,
+} from "@/lib/management-charts";
+import {
+  XP_PER_GOAL_WEEK,
+  XP_PER_SESSION,
+  badges,
+  heatmap,
+  weekProgress,
+  weeklyStreak,
+  xpAndLevel,
+} from "@/lib/gamification";
 describe("Team Oliveira business rules", () => {
   it("keeps access through seven late days and suspends on day eight", () => {
     expect(financialStage("2026-12-28", 7, "2027-01-04")).toBe("sete");
@@ -77,5 +95,107 @@ describe("hasMeaningfulText", () => {
   it("aceita descrição real", () => {
     expect(hasMeaningfulText("Dor no joelho direito")).toBe(true);
     expect(hasMeaningfulText("Hérnia de disco")).toBe(true);
+  });
+});
+
+describe("management-charts", () => {
+  it("lista os últimos meses em ordem, atravessando o ano", () => {
+    expect(lastMonths(3, "2026-01-15")).toEqual(["2025-11", "2025-12", "2026-01"]);
+    expect(monthLabel("2026-11")).toBe("nov/26");
+  });
+  it("soma renda por mês e ignora estornos", () => {
+    const r = revenueByMonth(
+      [
+        { paid_on: "2026-10-05", amount: 100 },
+        { paid_on: "2026-10-20", amount: 50.5 },
+        { paid_on: "2026-11-01", amount: 80, refunded: true },
+        { paid_on: "2026-11-02", amount: 30 },
+      ],
+      2,
+      "2026-11-10",
+    );
+    expect(r.map((x) => x.recebido)).toEqual([150.5, 30]);
+  });
+  it("acumula alunos e conta novos por mês", () => {
+    const r = studentsByMonth(
+      [{ created_at: "2026-09-10" }, { created_at: "2026-11-02" }, { created_at: "2026-11-05" }],
+      3,
+      "2026-11-10",
+    );
+    expect(r.map((x) => [x.novos, x.total])).toEqual([
+      [1, 1],
+      [0, 1],
+      [2, 3],
+    ]);
+  });
+  it("conta treinos concluídos por semana começando na segunda", () => {
+    const r = sessionsByWeek(
+      [
+        { performed_on: "2026-11-02", finished_at: "x" },
+        { performed_on: "2026-11-08", finished_at: "x" },
+        { performed_on: "2026-11-09", finished_at: "x" },
+        { performed_on: "2026-11-09", finished_at: null },
+      ],
+      2,
+      "2026-11-10",
+    );
+    expect(r.map((x) => x.treinos)).toEqual([2, 1]);
+  });
+  it("separa cobranças pagas, a vencer e vencidas", () => {
+    const r = chargeSplit(
+      [
+        { status: "paga", due_date: "2026-10-01" },
+        { status: "aberta", due_date: "2026-11-01" },
+        { status: "aberta", due_date: "2026-12-01" },
+      ],
+      "2026-11-10",
+    );
+    expect(r.map((x) => x.value)).toEqual([1, 1, 1]);
+  });
+  it("monta o funil de interessados em todas as etapas", () => {
+    const f = leadFunnel([{ status: "novo" }, { status: "novo" }, { status: "matriculado" }]);
+    expect(f.find((x) => x.status === "novo")?.total).toBe(2);
+    expect(f).toHaveLength(6);
+  });
+});
+
+describe("gamification", () => {
+  const s = (d: string) => ({ performed_on: d });
+  it("mede a meta da semana a partir da segunda", () => {
+    const w = weekProgress([s("2026-11-09"), s("2026-11-10"), s("2026-11-08")], 3, "2026-11-11");
+    expect(w).toEqual({ done: 2, goal: 3, pct: 67 });
+  });
+  it("conta semanas seguidas na meta e parte da anterior se a atual não bateu", () => {
+    const sessions = [
+      s("2026-10-19"),
+      s("2026-10-20"),
+      s("2026-10-26"),
+      s("2026-10-27"),
+      s("2026-11-02"),
+      s("2026-11-03"),
+    ];
+    expect(weeklyStreak(sessions, 2, "2026-11-04")).toBe(3);
+    expect(weeklyStreak(sessions, 3, "2026-11-04")).toBe(0);
+    expect(weeklyStreak([s("2026-10-26"), s("2026-10-27")], 2, "2026-11-04")).toBe(1);
+  });
+  it("monta a grade de constância com 7 dias por semana", () => {
+    const g = heatmap([s("2026-11-10"), s("2026-11-10")], 2, "2026-11-11");
+    expect(g).toHaveLength(2);
+    expect(g[1]).toHaveLength(7);
+    expect(g[1]?.find((c) => c.date === "2026-11-10")?.count).toBe(2);
+    expect(g[1]?.find((c) => c.date === "2026-11-12")?.future).toBe(true);
+  });
+  it("calcula XP e nível", () => {
+    const sessions = Array.from({ length: 5 }, (_, i) => s(`2026-11-0${i + 1}`));
+    const r = xpAndLevel(sessions, 3);
+    expect(r.xp).toBe(5 * XP_PER_SESSION + 1 * XP_PER_GOAL_WEEK);
+    expect(r.level).toBe(Math.floor(Math.sqrt(r.xp / 50)) + 1);
+    expect(r.pct).toBeGreaterThanOrEqual(0);
+    expect(r.pct).toBeLessThanOrEqual(100);
+  });
+  it("libera conquistas por total, sequência e semana cheia", () => {
+    const b = badges(10, 2, true);
+    const earned = b.filter((x) => x.earned).map((x) => x.id);
+    expect(earned).toEqual(["first", "t5", "t10", "week", "s2"]);
   });
 });

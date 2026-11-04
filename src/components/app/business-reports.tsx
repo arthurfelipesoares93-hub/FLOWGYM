@@ -5,6 +5,8 @@ import { PageHeader, StatCard, Section } from "./ui-bits";
 import { Input } from "@/components/ui/input";
 import { Field } from "./ui-bits";
 import { brl, dateBR, todayISO } from "@/lib/format";
+import { RevenueChart, WeeklySessionsChart } from "./management-charts";
+import { StudentRanking } from "./student-journey";
 export function BusinessReports() {
   const { data: d } = useSuspenseQuery(managementOptions);
   const [from, setFrom] = useState(todayISO().slice(0, 7) + "-01"),
@@ -70,6 +72,11 @@ export function BusinessReports() {
           value={d.goals.filter((g) => g.completed_at && within(g.completed_at)).length}
         />
       </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <RevenueChart payments={d.payments} />
+        <WeeklySessionsChart sessions={d.sessions} />
+      </div>
+      <StudentRanking />
       <Section title="Pagamentos registrados">
         {payments.map((p) => (
           <div key={p.id} className="flex flex-wrap justify-between gap-2 border-b py-3 text-sm">

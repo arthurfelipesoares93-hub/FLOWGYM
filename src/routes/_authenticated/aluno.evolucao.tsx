@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { portalOptions, studentOptions } from "@/lib/portal";
 import { PortalError, PortalNotFound } from "@/components/app/route-feedback";
 import { ProgressGoals } from "@/components/app/progress-goals";
+import { StudentJourney } from "@/components/app/student-journey";
 import { Performance } from "@/components/app/performance";
 import { PageHeader } from "@/components/app/ui-bits";
 export const Route = createFileRoute("/_authenticated/aluno/evolucao")({
@@ -28,6 +29,7 @@ function Page() {
     <>
       <PageHeader title="Minha evolução" />
       <ProgressGoals studentId={d.student.id} />
+      <StudentJourney studentId={d.student.id} goalPerWeek={d.assessment?.days_per_week ?? 3} />
       <Performance studentId={d.student.id} />
     </>
   );
