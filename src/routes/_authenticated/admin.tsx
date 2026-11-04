@@ -34,6 +34,8 @@ function Page() {
         { to: "/admin/alunos", label: "CRM e Gestão de Alunos", icon: Users },
         { to: "/admin/crm", label: "Interessados", icon: ContactRound },
         { to: "/admin/relatorios", label: "Relatórios", icon: ChartNoAxesCombined },
+      ]}
+      footerNav={[
         { to: "/admin/notificacoes", label: "Notificações", icon: Bell },
         { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
       ]}

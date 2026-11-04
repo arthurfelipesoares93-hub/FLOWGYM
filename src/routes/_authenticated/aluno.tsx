@@ -63,6 +63,8 @@ function Page() {
         { to: "/aluno/evolucao", label: "Evolução", icon: ChartNoAxesCombined },
         { to: "/aluno/financeiro", label: "Financeiro", icon: Wallet },
         { to: "/aluno/fotos", label: "Fotografias", icon: Camera },
+      ]}
+      footerNav={[
         { to: "/aluno/notificacoes", label: "Notificações", icon: Bell },
         { to: "/aluno/conta", label: "Minha conta", icon: UserRound },
       ]}

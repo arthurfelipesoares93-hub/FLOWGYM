@@ -1,6 +1,6 @@
 import { Link, Outlet } from "@tanstack/react-router";
 import { useState, useEffect, type ComponentType } from "react";
-import { Bell, LogOut, Menu, X } from "lucide-react";
+import { Bell, ChevronsLeft, ChevronsRight, LogOut, Menu, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, useSignOut } from "@/lib/auth";
@@ -16,6 +16,8 @@ export type NavItem = {
   exact?: boolean;
 };
 
+const COLLAPSE_KEY = "flowgym:sidebar-collapsed";
+
 function useUnreadCount() {
   return useQuery({
     queryKey: ["notifications", "unread"],
@@ -30,21 +32,46 @@ function useUnreadCount() {
   });
 }
 
+function useCollapsed() {
+  const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => {
+    try {
+      setCollapsed(localStorage.getItem(COLLAPSE_KEY) === "1");
+    } catch {
+      // Sem armazenamento disponível: a barra começa expandida.
+    }
+  }, []);
+  const toggle = () =>
+    setCollapsed((c) => {
+      const next = !c;
+      try {
+        localStorage.setItem(COLLAPSE_KEY, next ? "1" : "0");
+      } catch {
+        // O estado vale só nesta sessão.
+      }
+      return next;
+    });
+  return [collapsed, toggle] as const;
+}
+
 export function Shell({
   nav,
+  footerNav = [],
   notificationsTo,
   roleLabel,
 }: {
   nav: NavItem[];
+  /** Itens fixos no rodapé da barra lateral (ex.: Notificações e Configurações). */
+  footerNav?: NavItem[];
   notificationsTo: string;
   roleLabel: string;
 }) {
   const { data: brand } = usePublicBrand();
   const [open, setOpen] = useState(false);
+  const [collapsed, toggleCollapsed] = useCollapsed();
   const { data: me } = useMe();
   const signOut = useSignOut();
   const { data: unread } = useUnreadCount();
-
   useEffect(() => {
     if (!open) return;
     const close = (e: KeyboardEvent) => {
@@ -57,54 +84,120 @@ export function Shell({
       document.body.style.overflow = "";
     };
   }, [open]);
-  const sidebar = (
-    <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
-      <div className="flex items-center justify-between px-5 py-5">
-        <span className="font-display text-2xl font-bold uppercase tracking-wider text-sidebar-accent-foreground">
-          {brand?.brand || "Team Oliveira"}
-        </span>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="lg:hidden"
-          onClick={() => setOpen(false)}
-          aria-label="Fechar menu"
-        >
-          <X className="h-5 w-5" />
-        </Button>
-      </div>
-      <p className="px-5 pb-2 text-[11px] font-semibold uppercase tracking-widest text-sidebar-foreground/50">
-        {roleLabel}
-      </p>
-      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3">
-        {nav.map((n) => (
-          <Link
-            key={n.to}
-            to={n.to}
-            activeOptions={{ exact: !!n.exact }}
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            activeProps={{
-              className:
-                "bg-sidebar-primary !text-sidebar-primary-foreground hover:!bg-sidebar-primary",
-            }}
-          >
-            <n.icon className="h-4 w-4" />
-            {n.label}
-          </Link>
+
+  const brandName = brand?.brand || "Team Oliveira";
+
+  const renderLink = (n: NavItem, i: number, compact: boolean) => (
+    <Link
+      key={n.to}
+      to={n.to}
+      title={compact ? n.label : undefined}
+      aria-label={compact ? n.label : undefined}
+      activeOptions={{ exact: !!n.exact }}
+      onClick={() => setOpen(false)}
+      style={{ animationDelay: `${i * 40}ms` }}
+      className={cn(
+        "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground enter-soft motion-safe:hover:translate-x-0.5",
+        compact && "justify-center px-0",
+      )}
+      activeProps={{
+        className:
+          "bg-sidebar-primary !text-sidebar-primary-foreground shadow-sm hover:!bg-sidebar-primary",
+      }}
+    >
+      <n.icon className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110" />
+      {!compact && <span className="flex-1 truncate">{n.label}</span>}
+      {n.to === notificationsTo &&
+        !!unread &&
+        (compact ? (
+          <span className="absolute right-1.5 top-1 h-2.5 w-2.5 rounded-full bg-destructive motion-safe:animate-pulse" />
+        ) : (
+          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground motion-safe:animate-pulse">
+            {unread > 99 ? "99+" : unread}
+          </span>
         ))}
-      </nav>
-      <div className="border-t border-sidebar-border p-4">
-        <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">
-          {me?.fullName || me?.email}
+    </Link>
+  );
+
+  const renderSidebar = (compact: boolean) => (
+    <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
+      <div
+        className={cn(
+          "flex items-center py-5",
+          compact ? "justify-center px-2" : "justify-between px-5",
+        )}
+      >
+        <span
+          className="font-display text-2xl font-bold uppercase tracking-wider text-sidebar-accent-foreground"
+          title={brandName}
+        >
+          {compact ? brandName.charAt(0) : brandName}
+        </span>
+        {!compact && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={() => setOpen(false)}
+            aria-label="Fechar menu"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        )}
+      </div>
+      <div className="space-y-0.5 px-3 pb-2">
+        <button
+          type="button"
+          onClick={toggleCollapsed}
+          title={compact ? "Expandir menu" : "Recolher menu"}
+          aria-label={compact ? "Expandir menu" : "Recolher menu"}
+          aria-pressed={compact}
+          className={cn(
+            "group hidden w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/80 transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground lg:flex",
+            compact && "justify-center px-0",
+          )}
+        >
+          {compact ? (
+            <ChevronsRight className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" />
+          ) : (
+            <ChevronsLeft className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5" />
+          )}
+          {!compact && "Recolher menu"}
+        </button>
+      </div>
+      {!compact && (
+        <p className="px-5 pb-2 text-[11px] font-semibold uppercase tracking-widest text-sidebar-foreground/50">
+          {roleLabel}
         </p>
-        <p className="truncate text-xs text-sidebar-foreground/60">{me?.email}</p>
+      )}
+      <nav className="scroll-thin flex-1 space-y-0.5 overflow-y-auto px-3">
+        {nav.map((n, i) => renderLink(n, i, compact))}
+      </nav>
+      {footerNav.length > 0 && (
+        <nav className="space-y-0.5 border-t border-sidebar-border px-3 py-3">
+          {footerNav.map((n, i) => renderLink(n, nav.length + i, compact))}
+        </nav>
+      )}
+      <div className={cn("border-t border-sidebar-border", compact ? "p-2" : "p-4")}>
+        {!compact && (
+          <>
+            <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">
+              {me?.fullName || me?.email}
+            </p>
+            <p className="truncate text-xs text-sidebar-foreground/60">{me?.email}</p>
+          </>
+        )}
         <Button
           variant="ghost"
           onClick={signOut}
-          className="mt-3 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-accent-foreground"
+          title="Sair"
+          aria-label="Sair"
+          className={cn(
+            "flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-accent-foreground",
+            compact ? "w-full justify-center px-0" : "mt-3",
+          )}
         >
-          <LogOut className="h-4 w-4" /> Sair
+          <LogOut className="h-4 w-4" /> {!compact && "Sair"}
         </Button>
       </div>
     </div>
@@ -112,17 +205,27 @@ export function Shell({
 
   return (
     <div className="flex min-h-screen" data-blue-theme={brand?.theme ?? "classico"}>
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 lg:block">{sidebar}</aside>
+      <aside
+        className={cn(
+          "sticky top-0 hidden h-screen shrink-0 overflow-hidden transition-[width] duration-300 ease-out lg:block",
+          collapsed ? "w-[4.5rem]" : "w-64",
+        )}
+      >
+        {renderSidebar(collapsed)}
+      </aside>
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-foreground/50" onClick={() => setOpen(false)} />
+          <div
+            className="absolute inset-0 bg-foreground/50 motion-safe:animate-in motion-safe:fade-in"
+            onClick={() => setOpen(false)}
+          />
           <div
             role="dialog"
             aria-modal="true"
             aria-label="Menu de navegação"
-            className="absolute inset-y-0 left-0 w-72 max-w-[90vw]"
+            className="absolute inset-y-0 left-0 w-72 max-w-[90vw] motion-safe:animate-in motion-safe:slide-in-from-left motion-safe:duration-200"
           >
-            {sidebar}
+            {renderSidebar(false)}
           </div>
         </div>
       )}
@@ -137,9 +240,7 @@ export function Shell({
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <div className="lg:hidden font-display text-xl font-bold uppercase">
-            {brand?.brand || "Team Oliveira"}
-          </div>
+          <div className="lg:hidden font-display text-xl font-bold uppercase">{brandName}</div>
           <div className="hidden lg:block" />
           <div className="flex items-center gap-1">
             <ThemeToggle />
