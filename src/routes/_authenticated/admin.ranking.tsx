@@ -10,7 +10,14 @@ export const Route = createFileRoute("/_authenticated/admin/ranking")({
       "Ranking de alunos",
       "Classificação dos alunos por XP, sequência semanal e meta da semana.",
     ),
+  validateSearch: (search: Record<string, unknown>): { demo?: boolean } =>
+    search["demo"] === "1" || search["demo"] === 1 || search["demo"] === true ? { demo: true } : {},
   loader: ({ context }) => context.queryClient.ensureQueryData(managementOptions),
-  component: RankingPage,
+  component: Page,
   errorComponent: PortalError,
 });
+
+function Page() {
+  const { demo } = Route.useSearch();
+  return <RankingPage demo={!!demo} />;
+}

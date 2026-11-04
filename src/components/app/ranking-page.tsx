@@ -1,7 +1,9 @@
 import { Flame, Medal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "./ui-bits";
-import { RankingList, useRankingRows, type RankingRow } from "./student-journey";
+import { demoRankingRows } from "@/lib/demo-ranking";
+import { useRankingRows, type RankingRow } from "@/lib/ranking";
+import { RankingList } from "./student-journey";
 
 const PODIUM = [
   {
@@ -61,14 +63,21 @@ export function Podium({ rows }: { rows: RankingRow[] }) {
   );
 }
 
-export function RankingPage() {
-  const rows = useRankingRows();
+export function RankingPage({ demo = false }: { demo?: boolean }) {
+  const real = useRankingRows();
+  // Dados fictícios só no modo de desenvolvimento (?demo=1); em produção o parâmetro é ignorado.
+  const useDemo = demo && import.meta.env.DEV;
+  const rows = useDemo ? demoRankingRows() : real;
   const hasData = rows.some((r) => r.total > 0);
   return (
     <div className="space-y-6">
       <PageHeader
         title="Ranking de alunos"
-        description="Classificação por XP: 10 XP por treino concluído e 25 XP por semana com a meta batida."
+        description={
+          useDemo
+            ? "Dados fictícios de demonstração (modo de desenvolvimento)."
+            : "Classificação por XP: 10 XP por treino concluído e 25 XP por semana com a meta batida."
+        }
       />
       {!hasData && (
         <p className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">

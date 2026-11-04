@@ -1,7 +1,7 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Flame, Lock, Medal, Sparkles, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { managementOptions } from "@/lib/management";
+import type { RankingRow } from "@/lib/ranking";
 import { cn } from "@/lib/utils";
 import { dateBR, todayISO } from "@/lib/format";
 import { badges, heatmap, weekProgress, weeklyStreak, xpAndLevel } from "@/lib/gamification";
@@ -208,37 +208,6 @@ export function JourneyView({
 const MEDALS = ["text-warning", "text-muted-foreground", "text-chart-3"];
 
 /** Ranking de alunos por XP, para o treinador. */
-export function useRankingRows(): RankingRow[] {
-  const { data: d } = useSuspenseQuery(managementOptions);
-  const today = todayISO();
-  return d.students
-    .map((s) => {
-      const finished = d.sessions.filter((t) => t.student_id === s.id && t.finished_at);
-      const goal = Math.max(
-        1,
-        d.assessments.find((a) => a.student_id === s.id)?.days_per_week ?? 3,
-      );
-      return {
-        id: s.id,
-        name: d.profiles.find((p) => p.id === s.user_id)?.full_name ?? "Aluno",
-        total: finished.length,
-        week: weekProgress(finished, goal, today),
-        streak: weeklyStreak(finished, goal, today),
-        lvl: xpAndLevel(finished, goal),
-      };
-    })
-    .sort((a, b) => b.lvl.xp - a.lvl.xp || b.streak - a.streak);
-}
-
-export type RankingRow = {
-  id: string;
-  name: string;
-  total: number;
-  week: ReturnType<typeof weekProgress>;
-  streak: number;
-  lvl: ReturnType<typeof xpAndLevel>;
-};
-
 export function RankingList({
   rows,
   title = "Ranking de alunos",
