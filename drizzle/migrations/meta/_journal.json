@@ -85,6 +85,13 @@
       "when": 1793540880634,
       "tag": "0011_workout_ai_original_plan",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1793760000000,
+      "tag": "0012_workout_versions_manual_source",
+      "breakpoints": true
     }
   ]
 }
