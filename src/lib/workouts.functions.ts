@@ -3,7 +3,9 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 import { hasMeaningfulText } from "@/lib/format";
 
-const MODEL = "openai/gpt-6-astra";
+const DEFAULT_AI_MODEL = "openai/gpt-6-astra";
+// Troque o modelo sem novo deploy de código definindo AI_MODEL no ambiente do servidor.
+const aiModel = () => process.env["AI_MODEL"]?.trim() || DEFAULT_AI_MODEL;
 
 const exerciseSchema = z.object({
   name: z.string().trim().min(1).max(150),
@@ -221,7 +223,7 @@ Regras:
     let plan: z.infer<typeof planSchema>;
     try {
       const result = streamText({
-        model: provider.responses(MODEL) as never,
+        model: provider.responses(aiModel()) as never,
         system,
         prompt,
         output: Output.object({ schema: planSchema }),
@@ -255,7 +257,7 @@ Regras:
     const saved = await supabase.rpc("save_ai_workout", {
       _student_id: data.studentId,
       _plan: plan,
-      _model: MODEL,
+      _model: aiModel(),
     });
     if (saved.error) throw new Error(saved.error.message);
     await supabase

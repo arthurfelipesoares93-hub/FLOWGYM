@@ -13,7 +13,7 @@ import { Field, Section, PageHeader, EmptyState, Confirm } from "./ui-bits";
 import { ContactComposer, ContactHistory } from "./contact-composer";
 import { useAction, check } from "./actions";
 import { dateBR, todayISO } from "@/lib/format";
-export const leadStatuses = [
+const leadStatuses = [
   ["novo", "Novo interessado"],
   ["primeiro_contato", "Primeiro contato realizado"],
   ["aguardando", "Aguardando resposta"],

@@ -13,7 +13,7 @@ function Row({ k, v }: { k: string; v: React.ReactNode }) {
   );
 }
 
-export function hasHealthFlags(a: Partial<A> | null | undefined) {
+function hasHealthFlags(a: Partial<A> | null | undefined) {
   return !!(
     a &&
     [a.injuries, a.current_pain, a.movement_limitations, a.medical_restrictions].some(

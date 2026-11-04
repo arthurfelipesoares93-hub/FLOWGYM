@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Confirm, EmptyState, ErrorBox, Loading } from "./ui-bits";
 import { dateBR, errMsg } from "@/lib/format";
 
-export function usePhotos(studentId: string | undefined) {
+function usePhotos(studentId: string | undefined) {
   return useQuery({
     queryKey: ["photos", studentId],
     enabled: !!studentId,

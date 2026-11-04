@@ -16,7 +16,7 @@ export type NavItem = {
   exact?: boolean;
 };
 
-export function useUnreadCount() {
+function useUnreadCount() {
   return useQuery({
     queryKey: ["notifications", "unread"],
     queryFn: async () => {
