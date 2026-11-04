@@ -58,8 +58,8 @@ function ProgressRing({ pct, label, sub }: { pct: number; label: string; sub: st
 
 const HEAT = ["bg-muted", "bg-chart-1/30", "bg-chart-1/60", "bg-chart-1"];
 
-function Heatmap({ sessions }: { sessions: { performed_on: string }[] }) {
-  const weeks = heatmap(sessions, 12);
+function Heatmap({ sessions, today }: { sessions: { performed_on: string }[]; today: string }) {
+  const weeks = heatmap(sessions, 12, today);
   return (
     <div className="overflow-x-auto">
       <div className="flex gap-1" role="img" aria-label="Treinos concluídos nas últimas 12 semanas">
@@ -99,10 +99,21 @@ export function StudentJourney({
   const q = useFinishedSessions(studentId);
   if (q.isLoading) return <Loading />;
   if (q.error) return <ErrorBox error={q.error} />;
-  const sessions = q.data ?? [];
+  return <JourneyView sessions={q.data ?? []} goalPerWeek={goalPerWeek} />;
+}
+
+export function JourneyView({
+  sessions,
+  goalPerWeek = 3,
+  today = todayISO(),
+}: {
+  sessions: { performed_on: string }[];
+  goalPerWeek?: number | null;
+  today?: string;
+}) {
   const goal = Math.max(1, goalPerWeek ?? 3);
-  const week = weekProgress(sessions, goal);
-  const streak = weeklyStreak(sessions, goal);
+  const week = weekProgress(sessions, goal, today);
+  const streak = weeklyStreak(sessions, goal, today);
   const lvl = xpAndLevel(sessions, goal);
   const list = badges(sessions.length, streak, week.done >= week.goal);
   const earned = list.filter((b) => b.earned).length;
@@ -162,7 +173,7 @@ export function StudentJourney({
         </div>
       </div>
       <Section title="Constância das últimas 12 semanas">
-        <Heatmap sessions={sessions} />
+        <Heatmap sessions={sessions} today={today} />
       </Section>
       <Section title={`Conquistas · ${earned} de ${list.length}`}>
         <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -218,6 +229,19 @@ export function StudentRanking() {
     })
     .sort((a, b) => b.lvl.xp - a.lvl.xp || b.streak - a.streak)
     .slice(0, 10);
+  return <RankingList rows={rows} />;
+}
+
+export type RankingRow = {
+  id: string;
+  name: string;
+  total: number;
+  week: ReturnType<typeof weekProgress>;
+  streak: number;
+  lvl: ReturnType<typeof xpAndLevel>;
+};
+
+export function RankingList({ rows }: { rows: RankingRow[] }) {
   return (
     <Section title="Ranking de alunos">
       {!rows.length || rows.every((r) => r.total === 0) ? (
