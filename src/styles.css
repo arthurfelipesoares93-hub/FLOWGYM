@@ -6,7 +6,7 @@
 
 @theme inline {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Barlow Condensed", "Manrope", sans-serif;
+  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -52,8 +52,8 @@
 }
 
 :root {
-  --radius: 0.5rem;
-  --background: oklch(0.98 0.004 245);
+  --radius: 0.75rem;
+  --background: oklch(0.985 0.003 250);
   --foreground: oklch(0.18 0.01 260);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0.01 260);
@@ -91,7 +91,7 @@
   --sidebar-border: oklch(0.26 0.012 260);
   --sidebar-ring: oklch(0.6 0.2 258);
   --gradient-hero: linear-gradient(135deg, oklch(0.22 0.065 258) 0%, oklch(0.32 0.1 250) 100%);
-  --shadow-card: 0 1px 2px oklch(0 0 0 / 4%), 0 8px 24px -12px oklch(0 0 0 / 12%);
+  --shadow-card: 0 1px 2px oklch(0 0 0 / 3%), 0 4px 16px -8px oklch(0 0 0 / 8%);
 }
 
 .dark {
@@ -133,7 +133,7 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
   }
-  h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0; overflow-wrap: break-word; }
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.015em; font-weight: 700; overflow-wrap: break-word; }
   button, a, input, textarea, select { letter-spacing: 0; }
 }
 

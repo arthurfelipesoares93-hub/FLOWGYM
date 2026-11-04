@@ -18,7 +18,7 @@ function Page() {
         <PublicNav />
       </header>
       <main className="mx-auto max-w-5xl px-5 py-12">
-        <h1 className="text-4xl font-bold uppercase">Como funciona</h1>
+        <h1 className="text-4xl font-bold">Como funciona</h1>
         <div className="mt-8 grid gap-8 md:grid-cols-3">
           {[
             [
@@ -36,7 +36,7 @@ function Page() {
           ].map(([t, d], i) => (
             <section key={t} className="border-t-2 border-primary pt-5">
               <span className="font-display text-4xl font-bold text-primary">0{i + 1}</span>
-              <h2 className="mt-4 text-2xl font-semibold uppercase">{t}</h2>
+              <h2 className="mt-4 text-2xl font-semibold">{t}</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{d}</p>
             </section>
           ))}

@@ -35,7 +35,7 @@ export function AssessmentView({ a }: { a: A }) {
       )}
       <div className="grid gap-4 lg:grid-cols-2">
         <div>
-          <h3 className="mb-1 text-lg font-semibold uppercase">Dados pessoais</h3>
+          <h3 className="mb-1 text-lg font-semibold">Dados pessoais</h3>
           <dl>
             <Row k="Nome" v={a.full_name} />
             <Row
@@ -54,7 +54,7 @@ export function AssessmentView({ a }: { a: A }) {
           </dl>
         </div>
         <div>
-          <h3 className="mb-1 text-lg font-semibold uppercase">Objetivos e experiência</h3>
+          <h3 className="mb-1 text-lg font-semibold">Objetivos e experiência</h3>
           <dl>
             <Row k="Objetivos" v={goals} />
             <Row k="Outro objetivo" v={a.goal_other} />
@@ -63,7 +63,7 @@ export function AssessmentView({ a }: { a: A }) {
           </dl>
         </div>
         <div>
-          <h3 className="mb-1 text-lg font-semibold uppercase">Disponibilidade</h3>
+          <h3 className="mb-1 text-lg font-semibold">Disponibilidade</h3>
           <dl>
             <Row k="Dias por semana" v={a.days_per_week} />
             <Row k="Tempo por sessão" v={a.session_minutes ? `${a.session_minutes} min` : null} />
@@ -73,7 +73,7 @@ export function AssessmentView({ a }: { a: A }) {
           </dl>
         </div>
         <div>
-          <h3 className="mb-1 text-lg font-semibold uppercase">Saúde e limitações</h3>
+          <h3 className="mb-1 text-lg font-semibold">Saúde e limitações</h3>
           <dl>
             <Row k="Lesões" v={a.injuries} />
             <Row k="Dores atuais" v={a.current_pain} />
@@ -83,7 +83,7 @@ export function AssessmentView({ a }: { a: A }) {
           </dl>
         </div>
         <div>
-          <h3 className="mb-1 text-lg font-semibold uppercase">Atividades adicionais</h3>
+          <h3 className="mb-1 text-lg font-semibold">Atividades adicionais</h3>
           <dl>
             <Row k="Atividades" v={a.other_activities} />
             <Row k="Frequência" v={a.activities_frequency} />

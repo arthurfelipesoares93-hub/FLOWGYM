@@ -53,7 +53,7 @@ export function PageHeader({
   return (
     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="text-3xl font-bold uppercase sm:text-4xl">{title}</h1>
+        <h1 className="text-3xl font-bold sm:text-4xl">{title}</h1>
         {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
@@ -142,7 +142,7 @@ export function Section({
   return (
     <section className={cn("border-b py-5", className)}>
       <div className="mb-3 flex items-center justify-between gap-2">
-        <h2 className="text-xl font-semibold uppercase">{title}</h2>
+        <h2 className="text-xl font-semibold">{title}</h2>
         {actions}
       </div>
       {children}

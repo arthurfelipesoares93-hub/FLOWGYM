@@ -208,7 +208,7 @@ function Page() {
         <input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} />
         Suspensão automática após a tolerância configurada no plano
       </label>
-      <h2 className="text-2xl font-semibold uppercase">Metodologia Team Oliveira</h2>
+      <h2 className="text-2xl font-semibold">Metodologia Team Oliveira</h2>
       <p className="text-sm text-muted-foreground">
         Escreva como você monta treinos: divisões preferidas, exercícios que usa ou evita, faixas de
         repetições, descanso, progressão e cuidados. A IA segue essas regras em todas as próximas
@@ -223,7 +223,7 @@ function Page() {
           onChange={(e) => setGuide(e.target.value)}
         />
       </Field>
-      <h2 className="text-2xl font-semibold uppercase">Mensagens padrão</h2>
+      <h2 className="text-2xl font-semibold">Mensagens padrão</h2>
       {[
         ["acompanhamento", "Acompanhamento de treino"],
         ["financeiro", "Lembrete financeiro"],

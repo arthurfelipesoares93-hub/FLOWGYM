@@ -42,7 +42,7 @@ export function TrainerDashboard() {
         </TabsContent>
         <TabsContent value="alunos" className="space-y-4 pt-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold uppercase">Seus alunos</h2>
+            <h2 className="text-xl font-semibold">Seus alunos</h2>
             <span className="text-sm text-muted-foreground">{s.length} cadastrados</span>
           </div>
           <StudentList students={s.slice(0, 8)} />

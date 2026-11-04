@@ -38,10 +38,10 @@ function Index() {
             <p className="mb-3 text-xs font-semibold uppercase text-accent">
               William Oliveira · Personal trainer
             </p>
-            <h1 className="text-4xl font-bold uppercase leading-none sm:text-6xl">
+            <h1 className="text-4xl font-bold leading-none sm:text-6xl">
               {brand?.brand || "Team Oliveira"}
             </h1>
-            <h2 className="mt-4 max-w-lg text-3xl font-semibold uppercase leading-tight sm:text-4xl">
+            <h2 className="mt-4 max-w-lg text-3xl font-semibold leading-tight sm:text-4xl">
               Sua evolução começa com uma decisão.
             </h2>
             <p className="mt-4 max-w-lg text-sm text-primary-foreground/85 sm:text-base">
@@ -68,9 +68,7 @@ function Index() {
             <p className="text-xs font-semibold uppercase text-primary">
               Planejamento. Dedicação. Consistência.
             </p>
-            <h2 className="mt-2 text-3xl font-bold uppercase">
-              Seu objetivo é o ponto de partida.
-            </h2>
+            <h2 className="mt-2 text-3xl font-bold">Seu objetivo é o ponto de partida.</h2>
           </div>
           <Button asChild variant="link">
             <Link to="/como-funciona">
@@ -89,14 +87,14 @@ function Index() {
           ].map((x) => (
             <div key={x.label} className="rounded-lg border bg-card p-5">
               <x.icon className="h-7 w-7 text-primary" />
-              <h3 className="mt-5 text-xl font-semibold uppercase">{x.label}</h3>
+              <h3 className="mt-5 text-xl font-semibold">{x.label}</h3>
             </div>
           ))}
         </div>
       </section>
       <section className="bg-secondary">
         <div className="mx-auto flex max-w-6xl flex-col justify-between gap-5 px-5 py-10 sm:flex-row sm:items-center">
-          <h2 className="max-w-xl text-3xl font-bold uppercase">
+          <h2 className="max-w-xl text-3xl font-bold">
             O próximo passo da sua evolução pode começar hoje.
           </h2>
           <Button asChild>

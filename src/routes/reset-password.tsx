@@ -43,7 +43,7 @@ function Reset() {
           return undefined;
         }}
       >
-        <h1 className="text-3xl font-bold uppercase">Nova senha</h1>
+        <h1 className="text-3xl font-bold">Nova senha</h1>
         <Field label="Nova senha">
           <Input type="password" value={pw} onChange={(e) => setPw(e.target.value)} required />
         </Field>

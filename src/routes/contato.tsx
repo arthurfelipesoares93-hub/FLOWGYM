@@ -35,7 +35,7 @@ function Page() {
       </header>
       <main className="mx-auto max-w-3xl px-5 py-12">
         <p className="text-sm font-semibold text-primary">TEAM OLIVEIRA</p>
-        <h1 className="mt-3 text-4xl font-bold uppercase">Comece sua jornada</h1>
+        <h1 className="mt-3 text-4xl font-bold">Comece sua jornada</h1>
         <p className="mt-4 text-base text-muted-foreground">
           Seu objetivo é o ponto de partida. Vamos conversar sobre o seu acompanhamento?
         </p>

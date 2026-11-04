@@ -30,7 +30,7 @@ function Page() {
         <PublicNav />
       </header>
       <main className="mx-auto max-w-5xl px-5 py-10">
-        <h1 className="text-4xl font-bold uppercase">Conheça William Oliveira</h1>
+        <h1 className="text-4xl font-bold">Conheça William Oliveira</h1>
         <div className="mt-7 grid items-start gap-8 md:grid-cols-[.8fr_1.2fr]">
           <img
             src={`${photo.url}?v=2`}

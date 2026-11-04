@@ -38,7 +38,7 @@ export function StudentHome({ d, p }: { d: StudentData; p: PortalData }) {
     <div className="space-y-6">
       <PageHeader title={`Olá, ${d.profile.full_name.split(" ")[0] || "aluno"}`} />
       <div className="flex flex-wrap items-center justify-between gap-3 border-y bg-accent/15 px-4 py-6">
-        <h2 className="text-3xl font-bold uppercase">Seu próximo passo</h2>
+        <h2 className="text-3xl font-bold">Seu próximo passo</h2>
         <Button asChild>
           <Link to={d.assessment?.submitted_at ? "/aluno/treino" : "/aluno/ficha"}>
             {d.assessment?.submitted_at ? "Ver meu treino" : "Preencher avaliação"}

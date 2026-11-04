@@ -103,7 +103,7 @@ function AuthPage() {
           Team <span className="text-accent">Oliveira</span>
         </Link>
         <div>
-          <h2 className="text-5xl font-bold uppercase leading-none">
+          <h2 className="text-5xl font-bold leading-none">
             Seu treino,
             <br />
             aprovado por quem entende.
@@ -123,7 +123,7 @@ function AuthPage() {
           </Link>
           {sent ? (
             <div className="space-y-3">
-              <h1 className="text-3xl font-bold uppercase">Confirme seu e-mail</h1>
+              <h1 className="text-3xl font-bold">Confirme seu e-mail</h1>
               <p className="text-sm text-muted-foreground">
                 Enviamos um link de confirmação para <b>{email}</b>. Depois de confirmar, entre com
                 sua senha.
@@ -140,7 +140,7 @@ function AuthPage() {
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-4">
-              <h1 className="text-3xl font-bold uppercase">
+              <h1 className="text-3xl font-bold">
                 {mode === "login"
                   ? "Entrar"
                   : mode === "signup"

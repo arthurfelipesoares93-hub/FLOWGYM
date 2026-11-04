@@ -164,7 +164,7 @@ function SessionLogger({
       }}
     >
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold uppercase">{s.name}</h2>
+        <h2 className="text-2xl font-bold">{s.name}</h2>
         <Button type="button" variant="outline" onClick={onClose}>
           Voltar
         </Button>

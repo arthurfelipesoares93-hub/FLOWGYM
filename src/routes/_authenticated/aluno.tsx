@@ -38,7 +38,7 @@ function Page() {
   if ((p.access as AccessStatus | null)?.status === "bloqueado")
     return (
       <main className="mx-auto max-w-lg px-5 py-14">
-        <h1 className="text-3xl font-bold uppercase">Acesso temporariamente suspenso</h1>
+        <h1 className="text-3xl font-bold">Acesso temporariamente suspenso</h1>
         <p className="mt-5 text-sm">
           Existe uma pendência financeira ou suspensão definida pelo personal. Seus treinos e
           históricos continuam preservados. Entre em contato para conferir o pagamento e reativar
