@@ -7,6 +7,7 @@ import { PageHeader, Field } from "@/components/app/ui-bits";
 import { Input } from "@/components/ui/input";
 import { managementOptions } from "@/lib/management";
 import { inactivityLevel } from "@/lib/management-rules";
+import { financialLabels } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -84,7 +85,9 @@ function Page() {
           >
             <option value="">Todas</option>
             {["em_dia", "proximo", "pendente", "atrasado", "bloqueado", "inativo"].map((x) => (
-              <option key={x}>{x}</option>
+              <option key={x} value={x}>
+                {financialLabels[x]?.label ?? x}
+              </option>
             ))}
           </select>
         </Field>

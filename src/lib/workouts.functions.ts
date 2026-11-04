@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import { hasMeaningfulText } from "@/lib/format";
 
 const MODEL = "openai/gpt-6-astra";
 
@@ -245,12 +246,12 @@ Regras:
     plan = planSchema.parse(plan);
     if (plan.sessions.length !== assessment.days_per_week)
       throw new Error("A proposta não corresponde à disponibilidade semanal. Gere novamente.");
-    plan.requires_clearance ||= !!(
-      a.injuries ||
-      a.current_pain ||
-      a.medical_restrictions ||
-      a.movement_limitations
-    );
+    plan.requires_clearance ||= [
+      a.injuries,
+      a.current_pain,
+      a.medical_restrictions,
+      a.movement_limitations,
+    ].some(hasMeaningfulText);
     const saved = await supabase.rpc("save_ai_workout", {
       _student_id: data.studentId,
       _plan: plan,

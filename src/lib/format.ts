@@ -24,6 +24,29 @@ export function todayISO() {
   return new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
 }
 
+const NEGATIVE_ANSWERS = new Set([
+  "nenhum",
+  "nenhuma",
+  "nao",
+  "nao tenho",
+  "sem",
+  "nada",
+  "n/a",
+  "na",
+  "-",
+]);
+
+/** Verdadeiro quando o campo livre traz uma informação real (vazio e "nenhuma" não contam). */
+export function hasMeaningfulText(value: string | null | undefined) {
+  const text = (value ?? "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[.!]+$/, "");
+  return text.length > 0 && !NEGATIVE_ANSWERS.has(text);
+}
+
 export function ageFrom(birth: string | null | undefined, today = todayISO()) {
   if (!birth) return null;
   const [by = 0, bm = 0, bd = 0] = birth.split("-").map(Number);

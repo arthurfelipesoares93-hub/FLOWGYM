@@ -10,7 +10,7 @@ import { todayISO, dateTimeBR } from "@/lib/format";
 import { errMsg } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Field, Section } from "./ui-bits";
+import { Field, Section, Confirm } from "./ui-bits";
 import { check } from "./actions";
 
 /** Trainer confirms the enrollment payment: creates plan + payment, then requests the AI workout proposal for review. */
@@ -63,7 +63,6 @@ export function EnrollmentConfirm({ d }: { d: StudentData }) {
       toast.error("Informe o valor pago.");
       return;
     }
-    if (!window.confirm("Confirmar o pagamento e liberar o aluno?")) return;
     setBusy("Confirmando pagamento...");
     try {
       check(
@@ -145,9 +144,17 @@ export function EnrollmentConfirm({ d }: { d: StudentData }) {
               <Input value={method} onChange={(e) => setMethod(e.target.value)} />
             </Field>
           </div>
-          <Button className="w-full sm:w-auto" disabled={!!busy} onClick={() => void confirm()}>
-            {busy || "Confirmar pagamento e cadastrar aluno"}
-          </Button>
+          <Confirm
+            title="Confirmar o pagamento e liberar o aluno?"
+            description="O plano e o pagamento serão registrados e o aluno passa a ter acesso."
+            confirmLabel="Confirmar pagamento"
+            trigger={
+              <Button className="w-full sm:w-auto" disabled={!!busy}>
+                {busy || "Confirmar pagamento e cadastrar aluno"}
+              </Button>
+            }
+            onConfirm={() => void confirm()}
+          />
           <p className="text-xs text-muted-foreground">
             Ao confirmar, o plano e o pagamento são registrados e a IA prepara uma sugestão de
             treino, que só chega ao aluno após sua aprovação.

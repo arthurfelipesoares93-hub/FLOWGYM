@@ -1,5 +1,5 @@
 import type { Tables } from "@/integrations/supabase/types";
-import { ageFrom, dateBR, goalOptions } from "@/lib/format";
+import { ageFrom, dateBR, goalOptions, hasMeaningfulText } from "@/lib/format";
 import { AlertTriangle } from "lucide-react";
 
 type A = Tables<"assessments">;
@@ -16,7 +16,9 @@ function Row({ k, v }: { k: string; v: React.ReactNode }) {
 export function hasHealthFlags(a: Partial<A> | null | undefined) {
   return !!(
     a &&
-    (a.injuries || a.current_pain || a.movement_limitations || a.medical_restrictions)
+    [a.injuries, a.current_pain, a.movement_limitations, a.medical_restrictions].some(
+      hasMeaningfulText,
+    )
   );
 }
 

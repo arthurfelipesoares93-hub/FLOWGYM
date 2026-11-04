@@ -7,7 +7,7 @@ import {
   whatsappUrl,
   billingMessage,
 } from "@/lib/management-rules";
-import { ageFrom } from "@/lib/format";
+import { ageFrom, hasMeaningfulText } from "@/lib/format";
 describe("Team Oliveira business rules", () => {
   it("keeps access through seven late days and suspends on day eight", () => {
     expect(financialStage("2026-12-28", 7, "2027-01-04")).toBe("sete");
@@ -54,5 +54,28 @@ describe("Team Oliveira business rules", () => {
       "https://wa.me/5511999999999?text=Ol%C3%A1%20Ana!",
     );
     expect(() => whatsappUrl("123", "Olá")).toThrow();
+  });
+});
+
+describe("hasMeaningfulText", () => {
+  it("ignora vazio e respostas negativas", () => {
+    for (const v of [
+      null,
+      undefined,
+      "",
+      "  ",
+      "Nenhuma",
+      "nenhum.",
+      "Não",
+      "nao tenho",
+      "N/A",
+      "-",
+    ]) {
+      expect(hasMeaningfulText(v)).toBe(false);
+    }
+  });
+  it("aceita descrição real", () => {
+    expect(hasMeaningfulText("Dor no joelho direito")).toBe(true);
+    expect(hasMeaningfulText("Hérnia de disco")).toBe(true);
   });
 });
