@@ -55,6 +55,7 @@ function AuthPage() {
   const [phone, setPhone] = useState(invitedPhone ?? "");
   const [code, setCode] = useState(invite ?? "");
   const [consent, setConsent] = useState(false);
+  const [role, setRole] = useState<"aluno" | "treinador">("aluno");
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
   const navigate = useNavigate();
@@ -68,17 +69,30 @@ function AuthPage() {
         if (error) throw error;
         navigate({ to: "/painel" });
       } else if (mode === "signup") {
-        if (!consent) throw new Error("É necessário aceitar o tratamento dos dados pessoais.");
+        if (role === "aluno" && !consent)
+          throw new Error("É necessário aceitar o tratamento dos dados pessoais.");
         if (password.length < 8) throw new Error("A senha deve ter pelo menos 8 caracteres.");
-        const { error } = await supabase.auth.signUp({
+        const trainer = role === "treinador";
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: window.location.origin + "/painel",
-            data: { full_name: name, phone, invite_code: code, data_consent: "true" },
+            data: trainer
+              ? { full_name: name, phone, account_type: "treinador" }
+              : { full_name: name, phone, invite_code: code, data_consent: "true" },
           },
         });
-        if (error) throw error;
+        if (error) {
+          if (trainer && /database error/i.test(error.message))
+            throw new Error(
+              "Já existe um treinador cadastrado neste sistema. Peça um convite ao responsável.",
+            );
+          throw error;
+        }
+        // O Supabase devolve sucesso sem criar nada quando o e-mail já tem conta.
+        if (data.user && data.user.identities?.length === 0)
+          throw new Error("Este e-mail já tem uma conta. Entre com ele ou use outro e-mail.");
         setSent(true);
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -144,9 +158,35 @@ function AuthPage() {
                 {mode === "login"
                   ? "Entrar"
                   : mode === "signup"
-                    ? "Criar conta de aluno"
+                    ? role === "treinador"
+                      ? "Criar conta de treinador"
+                      : "Criar conta de aluno"
                     : "Recuperar senha"}
               </h1>
+              {mode === "signup" && (
+                <div
+                  role="radiogroup"
+                  aria-label="Tipo de conta"
+                  className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1 text-sm font-semibold"
+                >
+                  {(["aluno", "treinador"] as const).map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      role="radio"
+                      aria-checked={role === r}
+                      onClick={() => setRole(r)}
+                      className={
+                        role === r
+                          ? "rounded-md bg-background py-1.5 shadow-sm"
+                          : "rounded-md py-1.5 text-muted-foreground hover:text-foreground"
+                      }
+                    >
+                      {r === "aluno" ? "Sou aluno" : "Sou treinador"}
+                    </button>
+                  ))}
+                </div>
+              )}
               {mode === "signup" && (
                 <>
                   <Field label="Nome completo">
@@ -160,16 +200,23 @@ function AuthPage() {
                       onChange={(e) => setPhone(e.target.value)}
                     />
                   </Field>
-                  <Field
-                    label="Código do treinador"
-                    hint="Peça o código ao seu treinador. Você também pode informá-lo depois."
-                  >
-                    <Input
-                      value={code}
-                      onChange={(e) => setCode(e.target.value.toUpperCase())}
-                      placeholder="Ex.: A1B2C3D4"
-                    />
-                  </Field>
+                  {role === "aluno" ? (
+                    <Field
+                      label="Código do treinador"
+                      hint="Peça o código ao seu treinador. Você também pode informá-lo depois."
+                    >
+                      <Input
+                        value={code}
+                        onChange={(e) => setCode(e.target.value.toUpperCase())}
+                        placeholder="Ex.: A1B2C3D4"
+                      />
+                    </Field>
+                  ) : (
+                    <p className="rounded-lg border bg-muted/40 p-3 text-xs text-muted-foreground">
+                      O cadastro de treinador vale só para o primeiro treinador do sistema. Os
+                      alunos se cadastram pelo código de convite que ele recebe em Configurações.
+                    </p>
+                  )}
                 </>
               )}
               <Field label="E-mail">
@@ -192,7 +239,7 @@ function AuthPage() {
                   />
                 </Field>
               )}
-              {mode === "signup" && (
+              {mode === "signup" && role === "aluno" && (
                 <label className="flex items-start gap-2 text-xs text-muted-foreground">
                   <Checkbox
                     checked={consent}
