@@ -4,7 +4,7 @@
 -- UTF-8 como Windows-1252 antes de colar no SQL Editor. Cada letra acentuada virou 2 caracteres.
 --
 -- Este script desfaz a conversão (WIN1252 -> UTF8) em:
---   1) colunas text, varchar e jsonb das tabelas do schema public;
+--   1) colunas text, varchar, jsonb e text[] das tabelas do schema public;
 --   2) funções do schema public cujo código tem acentos corrompidos.
 -- Valores que não tiverem o padrão corrompido não são tocados. É seguro rodar mais de uma vez.
 --
@@ -32,10 +32,15 @@ begin
       on t.table_schema = c.table_schema and t.table_name = c.table_name
     where c.table_schema = 'public'
       and t.table_type = 'BASE TABLE'
-      and c.data_type in ('text', 'character varying', 'jsonb')
+      and (c.data_type in ('text', 'character varying', 'jsonb')
+           or (c.data_type = 'ARRAY' and c.udt_name = '_text'))
   loop
     begin
-      if r.data_type = 'jsonb' then
+      if r.data_type = 'ARRAY' then
+        execute format(
+          'update public.%I set %I = array(select pg_temp.fix_moji(x) from unnest(%I) as x) where %I::text ~ %L',
+          r.table_name, r.column_name, r.column_name, r.column_name, 'Ã|Â');
+      elsif r.data_type = 'jsonb' then
         execute format(
           'update public.%I set %I = pg_temp.fix_moji(%I::text)::jsonb where %I::text ~ %L',
           r.table_name, r.column_name, r.column_name, r.column_name, 'Ã|Â');
@@ -71,5 +76,6 @@ end $$;
 -- Conferência: todos devem devolver 0.
 select
   (select count(*) from public.notifications where title ~ 'Ã|Â' or body ~ 'Ã|Â') as notificacoes,
+  (select count(*) from public.assessments where available_days::text ~ 'Ã|Â' or goals::text ~ 'Ã|Â') as fichas,
   (select count(*) from pg_proc p join pg_namespace ns on ns.oid = p.pronamespace
      where ns.nspname = 'public' and p.prokind = 'f' and pg_get_functiondef(p.oid) ~ 'Ã|Â') as funcoes;
