@@ -17,6 +17,7 @@ import {
   sessionsByWeek,
   studentsByMonth,
 } from "@/lib/management-charts";
+import { buildRankingRow, sortRanking } from "@/lib/ranking";
 import {
   XP_PER_GOAL_WEEK,
   XP_PER_SESSION,
@@ -197,5 +198,28 @@ describe("gamification", () => {
     const b = badges(10, 2, true);
     const earned = b.filter((x) => x.earned).map((x) => x.id);
     expect(earned).toEqual(["first", "t5", "t10", "week", "s2"]);
+  });
+});
+
+describe("ranking", () => {
+  const today = "2026-11-11";
+  const row = (name: string, days: string[]) =>
+    buildRankingRow(
+      name,
+      name,
+      days.map((d) => ({ performed_on: d })),
+      3,
+      today,
+    );
+  it("desempata por treino mais recente e depois por nome", () => {
+    const a = row("Bia", ["2026-11-02", "2026-11-03"]);
+    const b = row("Ana", ["2026-11-02", "2026-11-04"]);
+    const c = row("Caio", ["2026-11-02", "2026-11-04"]);
+    expect(sortRanking([a, c, b]).map((r) => r.name)).toEqual(["Ana", "Caio", "Bia"]);
+  });
+  it("ordena por XP antes do desempate", () => {
+    const many = row("Zé", ["2026-11-01", "2026-11-02", "2026-11-03"]);
+    const few = row("Ana", ["2026-11-10"]);
+    expect(sortRanking([few, many])[0]?.name).toBe("Zé");
   });
 });

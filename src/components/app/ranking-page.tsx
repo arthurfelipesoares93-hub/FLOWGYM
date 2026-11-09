@@ -50,7 +50,7 @@ export function Podium({ rows }: { rows: RankingRow[] }) {
             <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               {p.place}º lugar
             </p>
-            <p className="mt-2 max-w-full truncate text-lg font-bold">{r.name}</p>
+            <p className="mt-2 max-w-full break-words text-lg font-bold leading-tight">{r.name}</p>
             <p className="font-display text-2xl font-bold text-primary">{r.lvl.xp} XP</p>
             <p className="text-xs text-muted-foreground">Nível {r.lvl.level}</p>
             <p className="mt-2 inline-flex items-center gap-1 text-xs">
